@@ -17,11 +17,11 @@ class Profile
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forIndexingProfile","forRequest"])]
+    #[Groups(["forIndexingProfile", "forRequest"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[Groups(["forIndexingProfile","forRequest"])]
+    #[Groups(["forIndexingProfile", "forRequest"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
@@ -44,6 +44,7 @@ class Profile
     #[Groups('forIndexingProfile')]
     #[ORM\OneToMany(mappedBy: 'userA', targetEntity: Relation::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $relations;
+
 
     public function __construct()
     {
@@ -193,4 +194,5 @@ class Profile
 
         return $this;
     }
+
 }
