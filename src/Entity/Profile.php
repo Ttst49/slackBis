@@ -45,12 +45,24 @@ class Profile
     #[ORM\OneToMany(mappedBy: 'userA', targetEntity: Relation::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $relations;
 
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: PrivateMessage::class, orphanRemoval: true)]
+    private Collection $privatesMessagesFromUser;
+
+    #[ORM\OneToMany(mappedBy: 'relatedToProfileA', targetEntity: PrivateConversation::class, orphanRemoval: true)]
+    private Collection $privateConversationsA;
+
+    #[ORM\OneToMany(mappedBy: 'relatedToProfileB', targetEntity: PrivateConversation::class, orphanRemoval: true)]
+    private Collection $privateConversationsB;
+
 
     public function __construct()
     {
         $this->profiles = new ArrayCollection();
         $this->requests = new ArrayCollection();
         $this->relations = new ArrayCollection();
+        $this->privatesMessagesFromUser = new ArrayCollection();
+        $this->privateConversationsA = new ArrayCollection();
+        $this->privateConversationsB = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +201,96 @@ class Profile
             // set the owning side to null (unless already changed)
             if ($relation->getUserA() === $this) {
                 $relation->setUserA(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PrivateMessage>
+     */
+    public function getPrivatesMessagesFromUser(): Collection
+    {
+        return $this->privatesMessagesFromUser;
+    }
+
+    public function addPrivatesMessagesFromUser(PrivateMessage $privatesMessagesFromUser): static
+    {
+        if (!$this->privatesMessagesFromUser->contains($privatesMessagesFromUser)) {
+            $this->privatesMessagesFromUser->add($privatesMessagesFromUser);
+            $privatesMessagesFromUser->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrivatesMessagesFromUser(PrivateMessage $privatesMessagesFromUser): static
+    {
+        if ($this->privatesMessagesFromUser->removeElement($privatesMessagesFromUser)) {
+            // set the owning side to null (unless already changed)
+            if ($privatesMessagesFromUser->getAuthor() === $this) {
+                $privatesMessagesFromUser->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PrivateConversation>
+     */
+    public function getPrivateConversationsA(): Collection
+    {
+        return $this->privateConversationsA;
+    }
+
+    public function addPrivateConversationsA(PrivateConversation $privateConversationsA): static
+    {
+        if (!$this->privateConversationsA->contains($privateConversationsA)) {
+            $this->privateConversationsA->add($privateConversationsA);
+            $privateConversationsA->setRelatedToProfileA($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrivateConversationsA(PrivateConversation $privateConversationsA): static
+    {
+        if ($this->privateConversationsA->removeElement($privateConversationsA)) {
+            // set the owning side to null (unless already changed)
+            if ($privateConversationsA->getRelatedToProfileA() === $this) {
+                $privateConversationsA->setRelatedToProfileA(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PrivateConversation>
+     */
+    public function getPrivateConversationsB(): Collection
+    {
+        return $this->privateConversationsB;
+    }
+
+    public function addPrivateConversationsB(PrivateConversation $privateConversationsB): static
+    {
+        if (!$this->privateConversationsB->contains($privateConversationsB)) {
+            $this->privateConversationsB->add($privateConversationsB);
+            $privateConversationsB->setRelatedToProfileB($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrivateConversationsB(PrivateConversation $privateConversationsB): static
+    {
+        if ($this->privateConversationsB->removeElement($privateConversationsB)) {
+            // set the owning side to null (unless already changed)
+            if ($privateConversationsB->getRelatedToProfileB() === $this) {
+                $privateConversationsB->setRelatedToProfileB(null);
             }
         }
 
