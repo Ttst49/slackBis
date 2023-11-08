@@ -30,6 +30,7 @@ class RegistrationController extends AbstractController
         );
 
         $user->setProfile(new Profile());
+        $user->getProfile()->setVisibility(true);
 
 
         $manager->persist($user);

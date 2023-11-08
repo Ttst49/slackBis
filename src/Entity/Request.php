@@ -9,18 +9,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request
 {
-    #[Groups('forCreation')]
+    #[Groups('forIndexingProfile')]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups('forRequest')]
+    #[Groups(["forRequest"])]
     #[ORM\ManyToOne(inversedBy: 'requests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $recipient = null;
 
-    #[Groups('forRequest')]
+    #[Groups(["forRequest"])]
     #[ORM\ManyToOne(inversedBy: 'requests')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $sender = null;

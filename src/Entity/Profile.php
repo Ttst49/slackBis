@@ -17,11 +17,11 @@ class Profile
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups('forIndexingProfile')]
+    #[Groups(["forIndexingProfile","forRequest"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[Groups('forIndexingProfile')]
+    #[Groups(["forIndexingProfile","forRequest"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
@@ -32,12 +32,16 @@ class Profile
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'friends')]
     private Collection $profiles;
 
+    #[Groups(["forRequest"])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
 
-    #[Groups('forCreation')]
+    #[Groups('forIndexingProfile')]
     #[ORM\OneToMany(mappedBy: 'recipient', targetEntity: Request::class, orphanRemoval: true)]
     private Collection $requests;
+
+    #[ORM\Column]
+    private ?bool $visibility = null;
 
     public function __construct()
     {
@@ -169,6 +173,18 @@ class Profile
                 $request->setRecipient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isVisibility(): ?bool
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(bool $visibility): static
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }
