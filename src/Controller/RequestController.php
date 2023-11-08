@@ -5,18 +5,16 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\Request;
-use App\Repository\ProfileRepository;
 use App\Repository\RelationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("api/")]
+#[Route("api/request")]
 class RequestController extends AbstractController
 {
-    #[Route('request/send/{id}', name: 'app_request')]
+    #[Route('/send/{id}', name: 'app_request')]
     public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager): Response
     {
         $request = new Request();
@@ -40,12 +38,13 @@ class RequestController extends AbstractController
                 }
             }
         }
+        #faire en sorte de ne pas pouvoir envoyer 2 demandes à la même personne
         $manager->persist($request);
         $manager->flush();
         return $this->json("Votre requête a bien été envoyé à ".$request->getRecipient()->getRelatedTo()->getUsername(),200);
     }
 
-    #[Route("request/get/{id}")]
+    #[Route("/get/{id}")]
     public function getRequestInfo(Request $request):Response{
 
         if ($request->getRecipient()->getRelatedTo() != $this->getUser()){
@@ -56,7 +55,7 @@ class RequestController extends AbstractController
     }
 
 
-    #[Route('request/accept/{id}')]
+    #[Route('/accept/{id}')]
     public function acceptRequest(Request $request,EntityManagerInterface $manager):Response{
 
         $relation = new Relation();
@@ -70,7 +69,7 @@ class RequestController extends AbstractController
        return $this->json("Vous avez ajouté ".$request->getSender()->getRelatedTo()->getUsername(),200);
     }
 
-    #[Route('request/deny/{id}')]
+    #[Route('/deny/{id}')]
     public function denyRequest(Request $request,EntityManagerInterface $manager):Response{
 
         $manager->remove($request);
@@ -79,7 +78,7 @@ class RequestController extends AbstractController
         return $this->json("Vous avez refusé la demande de ".$request->getSender()->getRelatedTo()->getUsername());
     }
 
-    #[Route('request/cancel/{id}')]
+    #[Route('/cancel/{id}')]
     public function cancelRequest(Request $request, EntityManagerInterface $manager):Response{
 
         if ($request->getSender()->getRelatedTo() != $this->getUser()){
@@ -94,19 +93,6 @@ class RequestController extends AbstractController
 
 
 
-    #[Route('request/getFriends')]
-    public function getFriends(RelationRepository $repository):Response{
 
-        $friends = [];
 
-        foreach ($repository->findAll() as $item){
-            if ($this->getUser()->getProfile()->getId() == $item->getUserA()->getId()){
-                $friends[] = $item->getUserB()->getRelatedTo()->getUsername();
-            }elseif($this->getUser()->getProfile()->getId() == $item->getUserB()->getId()){
-                $friends[] = $item->getUserA()->getRelatedTo()->getUsername();
-            }
-        }
-
-        return $this->json($friends,200);
-    }
 }
