@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Profile;
+use App\Entity\Relation;
 use App\Entity\Request;
+use App\Repository\ProfileRepository;
+use App\Repository\RelationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route("api/")]
 class RequestController extends AbstractController
 {
-    #[Route('request/{id}', name: 'app_request')]
+    #[Route('request/send/{id}', name: 'app_request')]
     public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager): Response
     {
         $request = new Request();
@@ -24,10 +27,10 @@ class RequestController extends AbstractController
         $sender = $request->getSender();
         if ($recipent === $sender){
             return $this->json("Vous ne pouvez pas envoyer une demande d'ami à vous même");
-        }elseif($recipent->getFriends() != null and $sender->getFriends()!= null) {
-            foreach ($recipent->getFriends() as $friend){
-                foreach ($sender->getFriends() as $friend2){
-                    if ($friend == $friend2){
+        }elseif($recipent->getRelations() != null and $sender->getRelations()!= null) {
+            foreach ($recipent->getRelations() as $relation){
+                foreach ($sender->getRelations() as $relation2){
+                    if ($relation == $relation2){
                         return $this->json("Vous avez déjà cet ami",200);
                     }else{
                         $manager->persist($request);
@@ -56,9 +59,13 @@ class RequestController extends AbstractController
     #[Route('request/accept/{id}')]
     public function acceptRequest(Request $request,EntityManagerInterface $manager):Response{
 
-       $request->getRecipient()->addFriend($request->getSender());
-       $manager->remove($request);
-       $manager->flush();
+        $relation = new Relation();
+        $relation->setUserA($request->getSender());
+        $relation->setUserB($request->getRecipient());
+        $manager->remove($request);
+        $manager->persist($relation);
+        $manager->flush();
+
 
        return $this->json("Vous avez ajouté ".$request->getSender()->getRelatedTo()->getUsername(),200);
     }
@@ -83,5 +90,23 @@ class RequestController extends AbstractController
 
         return $this->json("La requete a bien été supprimée",200);
 
+    }
+
+
+
+    #[Route('request/getFriends')]
+    public function getFriends(RelationRepository $repository):Response{
+
+        $friends = [];
+
+        foreach ($repository->findAll() as $item){
+            if ($this->getUser()->getProfile()->getId() == $item->getUserA()->getId()){
+                $friends[] = $item->getUserB()->getRelatedTo()->getUsername();
+            }elseif($this->getUser()->getProfile()->getId() == $item->getUserB()->getId()){
+                $friends[] = $item->getUserA()->getRelatedTo()->getUsername();
+            }
+        }
+
+        return $this->json($friends,200);
     }
 }

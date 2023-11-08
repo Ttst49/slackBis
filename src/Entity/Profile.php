@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
 {
-    #[Groups('forIndexingProfile')]
+    #[Groups(['forIndexingProfile'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,9 +25,6 @@ class Profile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
-    #[Groups('forIndexingProfile')]
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'profiles')]
-    private Collection $friends;
 
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'friends')]
     private Collection $profiles;
@@ -40,14 +37,19 @@ class Profile
     #[ORM\OneToMany(mappedBy: 'recipient', targetEntity: Request::class, orphanRemoval: true)]
     private Collection $requests;
 
+    #[Groups('forIndexingProfile')]
     #[ORM\Column]
     private ?bool $visibility = null;
 
+    #[Groups('forIndexingProfile')]
+    #[ORM\OneToMany(mappedBy: 'userA', targetEntity: Relation::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $relations;
+
     public function __construct()
     {
-        $this->friends = new ArrayCollection();
         $this->profiles = new ArrayCollection();
         $this->requests = new ArrayCollection();
+        $this->relations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,29 +81,6 @@ class Profile
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
-    public function getFriends(): Collection
-    {
-        return $this->friends;
-    }
-
-    public function addFriend(self $friend): static
-    {
-        if (!$this->friends->contains($friend)) {
-            $this->friends->add($friend);
-        }
-
-        return $this;
-    }
-
-    public function removeFriend(self $friend): static
-    {
-        $this->friends->removeElement($friend);
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, self>
@@ -115,7 +94,6 @@ class Profile
     {
         if (!$this->profiles->contains($profile)) {
             $this->profiles->add($profile);
-            $profile->addFriend($this);
         }
 
         return $this;
@@ -123,10 +101,7 @@ class Profile
 
     public function removeProfile(self $profile): static
     {
-        if ($this->profiles->removeElement($profile)) {
-            $profile->removeFriend($this);
-        }
-
+        $this->profiles->removeElement($profile);
         return $this;
     }
 
@@ -185,6 +160,36 @@ class Profile
     public function setVisibility(bool $visibility): static
     {
         $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Relation>
+     */
+    public function getRelations(): Collection
+    {
+        return $this->relations;
+    }
+
+    public function addRelation(Relation $relation): static
+    {
+        if (!$this->relations->contains($relation)) {
+            $this->relations->add($relation);
+            $relation->setUserA($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelation(Relation $relation): static
+    {
+        if ($this->relations->removeElement($relation)) {
+            // set the owning side to null (unless already changed)
+            if ($relation->getUserA() === $this) {
+                $relation->setUserA(null);
+            }
+        }
 
         return $this;
     }
