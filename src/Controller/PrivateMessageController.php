@@ -42,4 +42,19 @@ class PrivateMessageController extends AbstractController
         }
         return $this->json("Vous n'êtes pas l'auteur de ce message",200);
     }
+
+
+    #[Route('/edit/{id}',methods: 'PUT')]
+    public function editPrivateMessage(PrivateMessage $privateMessage,EntityManagerInterface $manager, Request $request):Response{
+
+        if ($privateMessage->getAuthor() == $this->getUser()->getProfile()){
+            $privateMessage->setDate(new \DateTime());
+            $content = json_decode($request->getContent(),true);
+            $privateMessage->setContent($content['content']);
+            $manager->persist($privateMessage);
+            $manager->flush();
+            return $this->json($privateMessage->getContent(),200);
+        }
+        return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
+    }
 }
