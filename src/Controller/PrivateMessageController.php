@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PrivateMessageController extends AbstractController
 {
     #[Route('/send/{id}', name: 'app_private_message')]
-    public function index(PrivateConversation $privateConversation, SerializerInterface $serializer, Request $request,EntityManagerInterface $manager): Response
+    public function sendPrivateMessage(PrivateConversation $privateConversation, SerializerInterface $serializer, Request $request,EntityManagerInterface $manager): Response
     {
         if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo() or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
             //$privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,'json');
@@ -30,5 +30,16 @@ class PrivateMessageController extends AbstractController
         }
 
         return $this->json("Vous ne pouvez pas faire cela",200);
+    }
+
+    #[Route('/remove/{id}',methods: "DELETE")]
+    public function removePrivateMessage(PrivateMessage $privateMessage,EntityManagerInterface $manager):Response{
+
+        if ($privateMessage->getAuthor() == $this->getUser()->getProfile()){
+            $manager->remove($privateMessage);
+            $manager->flush();
+            return $this->json("Votre message a bien été supprimé",200);
+        }
+        return $this->json("Vous n'êtes pas l'auteur de ce message",200);
     }
 }
