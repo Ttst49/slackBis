@@ -34,7 +34,7 @@ class PrivateConversationController extends AbstractController
                     $privateConversation->setRelatedToProfileB($profile);
                     $manager->persist($privateConversation);
                     $manager->flush();
-                    return $this->json('Nouvelle conversation entre '.$privateConversation->getRelatedToProfileA()->getRelatedTo()->getUsername().' et '.$privateCOnversation->getRelatedToProfileB()->getRelatedTo()->getUsername(),200);
+                    return $this->json('Nouvelle conversation entre '.$privateConversation->getRelatedToProfileA()->getRelatedTo()->getUsername().' et '.$privateConversation->getRelatedToProfileB()->getRelatedTo()->getUsername(),200);
                 }
             }
         }
