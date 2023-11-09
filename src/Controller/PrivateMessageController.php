@@ -3,22 +3,32 @@
 namespace App\Controller;
 
 use App\Entity\PrivateConversation;
+use App\Entity\PrivateMessage;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/private/message')]
 class PrivateMessageController extends AbstractController
 {
     #[Route('/send/{id}', name: 'app_private_message')]
-    public function index(PrivateConversation $privateConversation): Response
+    public function index(PrivateConversation $privateConversation, SerializerInterface $serializer, Request $request,EntityManagerInterface $manager): Response
     {
-        if ($this->getUser()->getProfile() == $privateConversation->getRelatedToProfileB() or $this->getUser() == $privateConversation->setRelatedToProfileA()){
-            dd("coucou");
+        if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo() or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
+            //$privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,'json');
+            $privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,"json");
+            $privateMessage->setDate(new \DateTime());
+            $privateMessage->setAuthor($this->getUser()->getProfile());
+            $privateMessage->setAssociatedToConversation($privateConversation);
+            $manager->persist($privateMessage);
+            $manager->flush();
+
+            return $this->json($privateMessage->getContent(),200);
         }
 
-        return $this->render('private_message/index.html.twig', [
-            'controller_name' => 'PrivateMessageController',
-        ]);
+        return $this->json("Vous ne pouvez pas faire cela",200);
     }
 }
