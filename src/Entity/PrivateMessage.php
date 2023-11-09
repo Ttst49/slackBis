@@ -5,19 +5,23 @@ namespace App\Entity;
 use App\Repository\PrivateMessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrivateMessageRepository::class)]
 class PrivateMessage
 {
+    #[Groups(["forPrivateConversation"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\ManyToOne(inversedBy: 'privatesMessagesFromUser')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 

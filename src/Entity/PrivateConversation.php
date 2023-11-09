@@ -6,6 +6,7 @@ use App\Repository\PrivateConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrivateConversationRepository::class)]
 class PrivateConversation
@@ -15,6 +16,7 @@ class PrivateConversation
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\OneToMany(mappedBy: 'associatedToConversation', targetEntity: PrivateMessage::class, orphanRemoval: true)]
     private Collection $privateMessages;
 

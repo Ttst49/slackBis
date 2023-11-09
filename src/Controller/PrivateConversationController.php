@@ -41,4 +41,15 @@ class PrivateConversationController extends AbstractController
 
         return $this->json("Cette personne n'a pas été trouvée",200);
     }
+
+
+    #[Route('/showMessages/{id}')]
+    public function showPrivateMessagesFromPrivateConversation(PrivateConversation $privateConversation):Response{
+
+        if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo() or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
+            return $this->json($privateConversation->getPrivateMessages(),200,[],["groups"=>"forPrivateConversation"]);
+        }
+
+        return $this->json("Vous ne pouvez pas accéder à cette ressource",403);
+    }
 }
