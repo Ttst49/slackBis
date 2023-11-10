@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\GroupConversation;
+use App\Entity\Profile;
 use App\Repository\ProfileRepository;
 use App\Service\FriendsService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,4 +52,24 @@ class GroupConversationController extends AbstractController
         return $this->json('Cette personne ne fait pas partie de vos amis visiblement ',200);
     }
 
+
+
+    #[Route('/promote/{id}/{userId}')]
+    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository, Request $request):Response{
+
+        foreach ($groupConversation->getAdminMembers() as $adminMember){
+            if ($this->getUser() == $adminMember){
+                $user = $repository->findOneBy(["id"=>$userId]);
+                foreach ($groupConversation->getGroupMembers() as $groupMember){
+                    if ($user == $groupMember){
+                        $groupConversation->addAdminMember($user->getRelatedTo());
+                        return $this->json($user->getRelatedTo()->getUsername()." a bien été promu Admin",200);
+                    }
+                }
+            }
+        }
+
+
+        return $this->json("Vous ne pouvez pas faire ça",200);
+    }
 }
