@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PrivateConversationController extends AbstractController
 {
     #[Route('/create/{id}', name: 'app_private_conversation')]
-    public function index(Profile $profile, FriendsService $friendsService, RelationRepository $relation,EntityManagerInterface $manager): Response
+    public function index(Profile $profile, FriendsService $friendsService,EntityManagerInterface $manager): Response
     {
         $friends = $friendsService->getFriends();
 
