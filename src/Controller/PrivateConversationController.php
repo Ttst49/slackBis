@@ -31,7 +31,6 @@ class PrivateConversationController extends AbstractController
                 }
             }
         }
-
         return $this->json("Cette personne n'a pas été trouvée",200);
     }
 

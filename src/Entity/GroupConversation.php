@@ -19,16 +19,20 @@ class GroupConversation
     private Collection $groupMessages;
 
     #[ORM\ManyToMany(targetEntity: Profile::class)]
-    private Collection $membersFromGroup;
+    private Collection $groupMembers;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $adminMembers;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Profile $owner = null;
 
 
     public function __construct()
     {
         $this->groupMessages = new ArrayCollection();
-        $this->membersFromGroup = new ArrayCollection();
+        $this->groupMembers = new ArrayCollection();
         $this->adminMembers = new ArrayCollection();
     }
 
@@ -71,23 +75,23 @@ class GroupConversation
     /**
      * @return Collection<int, Profile>
      */
-    public function getMembersFromGroup(): Collection
+    public function getGroupMembers(): Collection
     {
-        return $this->membersFromGroup;
+        return $this->groupMembers;
     }
 
-    public function addMembersFromGroup(Profile $membersFromGroup): static
+    public function addGroupMember(Profile $membersFromGroup): static
     {
-        if (!$this->membersFromGroup->contains($membersFromGroup)) {
-            $this->membersFromGroup->add($membersFromGroup);
+        if (!$this->groupMembers->contains($membersFromGroup)) {
+            $this->groupMembers->add($membersFromGroup);
         }
 
         return $this;
     }
 
-    public function removeMembersFromGroup(Profile $membersFromGroup): static
+    public function removeGroupMember(Profile $membersFromGroup): static
     {
-        $this->membersFromGroup->removeElement($membersFromGroup);
+        $this->groupMembers->removeElement($membersFromGroup);
 
         return $this;
     }
@@ -112,6 +116,18 @@ class GroupConversation
     public function removeAdminMember(User $adminMember): static
     {
         $this->adminMembers->removeElement($adminMember);
+
+        return $this;
+    }
+
+    public function getOwner(): ?Profile
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?Profile $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
