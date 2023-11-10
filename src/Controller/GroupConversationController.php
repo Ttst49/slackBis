@@ -83,4 +83,27 @@ class GroupConversationController extends AbstractController
 
         return $this->json("Vous ne pouvez pas faire ça",200);
     }
+
+
+    #[Route('/leave/{id}')]
+    public function leaveGroupConversation(GroupConversation $groupConversation,EntityManagerInterface $manager):Response{
+
+        $adminsCounter = $groupConversation->getAdminMembers()->count();
+
+        foreach ($groupConversation->getAdminMembers() as $adminMember){
+            if($this->getUser() == $adminMember and $adminsCounter == 1){
+                return $this->json("tu dois promouvoir quelqu'un administrateur pour pouvoir quitter ce groupe",200);
+            }elseif ($this->getUser() == $adminMember and $adminsCounter > 1){
+                $groupConversation->removeAdminMember($this->getUser()->getProfile()->getRelatedTo());
+                $groupConversation->removeGroupMember($this->getUser()->getProfile());
+                $manager->persist($groupConversation);
+                $manager->flush();
+                return $this->json("vous avez bien quitté le groupe d'id: ".$groupConversation->getId(),200);
+            }
+        }
+
+
+        return $this->json("coucou",200);
+    }
+
 }

@@ -44,6 +44,7 @@ class GroupConversation
         $this->groupMessages = new ArrayCollection();
         $this->groupMembers = new ArrayCollection();
         $this->adminMembers = new ArrayCollection();
+        $this->date = new \DateTime();
     }
 
 

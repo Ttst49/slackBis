@@ -20,7 +20,6 @@ class PrivateMessageController extends AbstractController
         if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo()
             or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
             $privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,"json");
-            $privateMessage->setDate(new \DateTime());
             $privateMessage->setAuthor($this->getUser()->getProfile());
             $privateMessage->setAssociatedToConversation($privateConversation);
             $manager->persist($privateMessage);
