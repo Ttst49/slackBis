@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\PrivateConversation;
 use App\Entity\Profile;
 use App\Repository\RelationRepository;
+use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,17 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class PrivateConversationController extends AbstractController
 {
     #[Route('/create/{id}', name: 'app_private_conversation')]
-    public function index(Profile $profile, FriendController $controller, RelationRepository $relation,EntityManagerInterface $manager): Response
+    public function index(Profile $profile, FriendsService $friendsService, RelationRepository $relation,EntityManagerInterface $manager): Response
     {
-        $friends = [];
-
-        foreach ($relation->findAll() as $item){
-            if ($this->getUser()->getProfile()->getId() == $item->getUserA()->getId()){
-                $friends[] = $item->getUserB()->getRelatedTo();
-            }elseif($this->getUser()->getProfile()->getId() == $item->getUserB()->getId()){
-                $friends[] = $item->getUserA()->getRelatedTo();
-            }
-        }
+        $friends = $friendsService->getFriends();
 
         if ($friends != []){
             foreach ($friends as $item){

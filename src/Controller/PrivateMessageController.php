@@ -15,10 +15,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PrivateMessageController extends AbstractController
 {
     #[Route('/send/{id}', name: 'app_private_message')]
-    public function sendPrivateMessage(PrivateConversation $privateConversation, SerializerInterface $serializer, Request $request,EntityManagerInterface $manager): Response
+    public function sendPrivateMessage(PrivateConversation $privateConversation,SerializerInterface $serializer,Request $request,EntityManagerInterface $manager): Response
     {
-        if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo() or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
-            //$privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,'json');
+        if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo()
+            or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
             $privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,"json");
             $privateMessage->setDate(new \DateTime());
             $privateMessage->setAuthor($this->getUser()->getProfile());

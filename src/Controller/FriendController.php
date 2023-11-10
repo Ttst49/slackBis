@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Relation;
 use App\Repository\RelationRepository;
+use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,17 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class FriendController extends AbstractController
 {
     #[Route('/getFriends')]
-    public function getFriends(RelationRepository $repository):Response{
-
-        $friends = [];
-
-        foreach ($repository->findAll() as $item){
-            if ($this->getUser()->getProfile()->getId() == $item->getUserA()->getId()){
-                $friends[] = $item->getUserB()->getRelatedTo();
-            }elseif($this->getUser()->getProfile()->getId() == $item->getUserB()->getId()){
-                $friends[] = $item->getUserA()->getRelatedTo();
-            }
-        }
+    public function getFriends(FriendsService $service):Response{
+        $friends = $service->getFriends();
 
         return $this->json($friends,200,[],["groups"=>"forIndexingProfile"]);
     }
@@ -49,3 +41,4 @@ class FriendController extends AbstractController
 # entité privatemessageresponse groupmessageresponse chanelmessageresponse
 # entité image et controlleur image associer les images à une entité message
 # limiter le nombres de messages qu'on voit avec le bundle de pagination ou à la main dans le repo
+# bien changer les noms pour qu'ils ressemlbent aux entités
