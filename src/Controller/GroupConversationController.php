@@ -16,6 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/group/conversation')]
 class GroupConversationController extends AbstractController
 {
+    #[Route('/show/{id}')]
+    public function showGroupConversation(GroupConversation $groupConversation):Response{
+
+        return $this->json($groupConversation,200,[],["groups"=>"forGroupIndexing"]);
+    }
+
+
+
+
     #[Route('/create', methods: "POST")]
     public function createGroupConversation(FriendsService $service,Request $request, ProfileRepository $repository,EntityManagerInterface $manager): Response{
 
@@ -55,7 +64,7 @@ class GroupConversationController extends AbstractController
 
 
     #[Route('/promote/{id}/{userId}')]
-    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository, Request $request):Response{
+    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository, Request $request,EntityManagerInterface $manager):Response{
 
         foreach ($groupConversation->getAdminMembers() as $adminMember){
             if ($this->getUser() == $adminMember){
@@ -63,6 +72,8 @@ class GroupConversationController extends AbstractController
                 foreach ($groupConversation->getGroupMembers() as $groupMember){
                     if ($user == $groupMember){
                         $groupConversation->addAdminMember($user->getRelatedTo());
+                        $manager->persist($groupConversation);
+                        $manager->flush();
                         return $this->json($user->getRelatedTo()->getUsername()." a bien été promu Admin",200);
                     }
                 }
