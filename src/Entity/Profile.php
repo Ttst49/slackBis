@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
 {
-    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation"])]
+    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -29,7 +29,7 @@ class Profile
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'friends')]
     private Collection $profiles;
 
-    #[Groups(["forRequest","forPrivateConversation","forGroupCreation","forGroupCreation"])]
+    #[Groups(["forRequest","forPrivateConversation","forGroupCreation","forGroupCreation","forGroupIndexing"])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
 

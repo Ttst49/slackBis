@@ -5,33 +5,38 @@ namespace App\Entity;
 use App\Repository\GroupConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GroupConversationRepository::class)]
 class GroupConversation
 {
+    #[Groups(["forGroupIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\OneToMany(mappedBy: 'groupConversation', targetEntity: GroupMessage::class, orphanRemoval: true)]
     private Collection $groupMessages;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\ManyToMany(targetEntity: Profile::class)]
     private Collection $groupMembers;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $adminMembers;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $owner = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
 
     public function __construct()
@@ -133,6 +138,18 @@ class GroupConversation
     public function setOwner(?Profile $owner): static
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }

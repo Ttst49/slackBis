@@ -10,22 +10,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: GroupMessageRepository::class)]
 class GroupMessage
 {
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(["forGroupCreation"])]
+    #[Groups(["forGroupCreation","forGroupIndexing"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
