@@ -6,6 +6,7 @@ use App\Repository\GroupConversationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GroupConversationRepository::class)]
 class GroupConversation
@@ -15,15 +16,19 @@ class GroupConversation
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forGroupCreation"])]
     #[ORM\OneToMany(mappedBy: 'groupConversation', targetEntity: GroupMessage::class, orphanRemoval: true)]
     private Collection $groupMessages;
 
+    #[Groups(["forGroupCreation"])]
     #[ORM\ManyToMany(targetEntity: Profile::class)]
     private Collection $groupMembers;
 
+    #[Groups(["forGroupCreation"])]
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $adminMembers;
 
+    #[Groups(["forGroupCreation"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $owner = null;
