@@ -18,7 +18,12 @@ class GroupConversationController extends AbstractController
     #[Route('/show/{id}')]
     public function showGroupConversation(GroupConversation $groupConversation):Response{
 
-        return $this->json($groupConversation,200,[],["groups"=>"forGroupIndexing"]);
+        foreach ($groupConversation->getGroupMembers() as $groupMember){
+            if ($this->getUser()->getProfile() === $groupMember){
+                return $this->json($groupConversation,200,[],["groups"=>"forGroupIndexing"]);
+            }
+        }
+        return $this->json("Aucun groupe a montrer",200);
     }
 
 
