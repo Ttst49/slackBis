@@ -64,8 +64,8 @@ class GroupConversationController extends AbstractController
 
 
 
-    #[Route('/promote/{id}/{userId}')]
-    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository, Request $request,EntityManagerInterface $manager):Response{
+    #[Route('/promote/admin/{id}/{userId}')]
+    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository,EntityManagerInterface $manager):Response{
 
         foreach ($groupConversation->getAdminMembers() as $adminMember){
             if ($this->getUser() == $adminMember){
@@ -83,6 +83,28 @@ class GroupConversationController extends AbstractController
 
 
         return $this->json("Vous ne pouvez pas faire ça",200);
+    }
+
+
+    #[Route('/promote/owner/{id}/{userId}')]
+    public function promoteOwner(GroupConversation $groupConversation, $userId, ProfileRepository $repository, EntityManagerInterface $manager):Response{
+
+        if ($this->getUser()->getProfile() == $groupConversation->getOwner()){
+            $user = $repository->findOneBy(["id"=>$userId]);
+            foreach ($groupConversation->getAdminMembers() as $adminMember){
+                if ($user->getRelatedTo() == $adminMember){
+                    $groupConversation->setOwner($user);
+                    $manager->persist($groupConversation);
+                    $manager->flush();
+
+                    return $this->json("Le nouveau propriétaire du groupe est ".$groupConversation->getOwner()->getRelatedTo()->getUsername(),200);
+                }else{
+                    return $this->json("Vous ne pouvez que promouvoir chef de groupe qu'un membre administrateur",200);
+                }
+            }
+        }
+        return $this->json("Vous devez être le propriétaire du groupe pour faire ça",200);
+
     }
 
 
@@ -104,7 +126,7 @@ class GroupConversationController extends AbstractController
         }
 
 
-        return $this->json("coucou",200);
+        return $this->json("une erreur est survenue",200);
     }
 
     #[Route('/add/{id}')]
@@ -139,5 +161,9 @@ class GroupConversationController extends AbstractController
 
         return $this->json("Une erreur est survenue, n'y aurait-il pas une erreur dans la requete?",200);
     }
+
+
+
+
 
 }
