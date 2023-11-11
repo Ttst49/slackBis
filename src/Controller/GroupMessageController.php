@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/group/message')]
 class GroupMessageController extends AbstractController
 {
-    #[Route('/send/{id}', name: 'app_group_message')]
+    #[Route('/send/{id}')]
     public function sendMessage(GroupConversation $groupConversation, SerializerInterface $serializer, EntityManagerInterface $manager, Request $request): Response
     {
         foreach ($groupConversation->getGroupMembers() as $member){
@@ -31,4 +31,18 @@ class GroupMessageController extends AbstractController
 
         return $this->json("Vous ne faites pas parti de ce groupe visiblement ou il n'existe pas",404);
     }
+
+
+    #[Route('/show/{id}')]
+    public function showGroupMessage(GroupMessage $groupMessage):Response{
+
+        foreach($groupMessage->getGroupConversation()->getGroupMembers() as $member){
+            if ($this->getUser()->getProfile() === $member){
+                return $this->json($groupMessage,200,[],["groups"=>"forGroupIndexing"]);
+            }
+        }
+        return $this->json("Rien à montrer",200);
+    }
+
+
 }
