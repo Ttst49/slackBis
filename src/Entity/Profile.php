@@ -26,10 +26,7 @@ class Profile
     private ?string $lastName = null;
 
 
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'friends')]
-    private Collection $profiles;
-
-    #[Groups(["forRequest","forPrivateConversation","forGroupCreation","forGroupCreation","forGroupIndexing"])]
+    #[Groups(["forRequest","forPrivateConversation","forGroupCreation","forGroupIndexing"])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
 
@@ -91,30 +88,6 @@ class Profile
     {
         $this->lastName = $lastName;
 
-        return $this;
-    }
-
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getProfiles(): Collection
-    {
-        return $this->profiles;
-    }
-
-    public function addProfile(self $profile): static
-    {
-        if (!$this->profiles->contains($profile)) {
-            $this->profiles->add($profile);
-        }
-
-        return $this;
-    }
-
-    public function removeProfile(self $profile): static
-    {
-        $this->profiles->removeElement($profile);
         return $this;
     }
 

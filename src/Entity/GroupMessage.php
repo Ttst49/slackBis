@@ -32,7 +32,11 @@ class GroupMessage
     #[ORM\ManyToOne(inversedBy: 'groupMessages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?GroupConversation $groupConversation = null;
-    
+
+
+    public function __construct(){
+        $this->date = new \DateTime();
+    }
 
     public function getId(): ?int
     {
