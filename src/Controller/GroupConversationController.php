@@ -8,6 +8,7 @@ use App\Repository\ProfileRepository;
 use App\Service\FriendsService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -104,6 +105,39 @@ class GroupConversationController extends AbstractController
 
 
         return $this->json("coucou",200);
+    }
+
+    #[Route('/add/{id}')]
+    public function addNewMember(GroupConversation $groupConversation, Request $request, ProfileRepository $repository, EntityManagerInterface $manager, FriendsService $service):Response{
+
+        $friends = $service->getFriends();
+
+        foreach ($groupConversation->getGroupMembers() as $groupMember){
+            if($this->getUser() == $groupMember->getRelatedTo()){
+                $parameters = json_decode($request->getContent(),true);
+                foreach ($parameters["members"] as $member) {
+                    $profile = $repository->findOneBy(["id" => $member]);
+                    foreach ($friends as $friend){
+                        if ($profile->getRelatedTo() == $friend){
+                            foreach ($groupConversation->getGroupMembers() as $groupMember){
+                                if ($groupMember == $profile){
+                                    return $this->json("L'utilisateur ".$groupMember->getRelatedTo()->getUsername()." est déjà membre du gorupe",200);
+                                }else{
+                                    $groupConversation->addGroupMember($profile);
+                                    $manager->persist($groupConversation);
+                                    $manager->flush();
+                                    return $this->json("Le membre ".$profile->getRelatedTo()->getUsername()." a bien été ajouté au groupe",200);
+                                }
+                            }
+                        }else{
+                            return $this->json("Cette personne ne fait visiblement pas parti de vos amis",200);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this->json("Une erreur est survenue, n'y aurait-il pas une erreur dans la requete?",200);
     }
 
 }
