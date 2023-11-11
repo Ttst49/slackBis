@@ -114,6 +114,8 @@ class GroupConversationController extends AbstractController
         $adminsCounter = $groupConversation->getAdminMembers()->count();
 
         foreach ($groupConversation->getAdminMembers() as $adminMember){
+            foreach ($groupConversation->getGroupMembers() as $groupMember){
+
             if($this->getUser() == $adminMember and $adminsCounter == 1){
                 return $this->json("tu dois promouvoir quelqu'un administrateur pour pouvoir quitter ce groupe",200);
             }elseif ($this->getUser() == $adminMember and $adminsCounter > 1){
@@ -122,6 +124,12 @@ class GroupConversationController extends AbstractController
                 $manager->persist($groupConversation);
                 $manager->flush();
                 return $this->json("vous avez bien quitté le groupe d'id: ".$groupConversation->getId(),200);
+            }elseif ($this->getUser() != $adminMember and $this->getUser() == $groupMember){
+                $groupConversation->removeGroupMember($this->getUser()->getProfile());
+                $manager->persist($groupConversation);
+                $manager->flush();
+                return $this->json("Vous avez bien quitté le groupe d'id ".$groupConversation->getId(),200);
+            }
             }
         }
 
