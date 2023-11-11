@@ -3,12 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\GroupConversation;
-use App\Entity\Profile;
 use App\Repository\ProfileRepository;
 use App\Service\FriendsService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,24 +61,41 @@ class GroupConversationController extends AbstractController
     }
 
 
+    #[Route('/demote/admin/{id}/{userId}',name: "app_groupconversation_demoteadmin")]
+    #[Route('/promote/admin/{id}/{userId},',name: "app_groupconversation_promoteadmin")]
+    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository,EntityManagerInterface $manager,Request $request):Response{
 
-    #[Route('/promote/admin/{id}/{userId}')]
-    public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository,EntityManagerInterface $manager):Response{
+        $adminsCounter = $groupConversation->getAdminMembers()->count();
 
         foreach ($groupConversation->getAdminMembers() as $adminMember){
             if ($this->getUser() == $adminMember){
                 $user = $repository->findOneBy(["id"=>$userId]);
                 foreach ($groupConversation->getGroupMembers() as $groupMember){
                     if ($user == $groupMember){
-                        $groupConversation->addAdminMember($user->getRelatedTo());
-                        $manager->persist($groupConversation);
-                        $manager->flush();
-                        return $this->json($user->getRelatedTo()->getUsername()." a bien été promu Admin",200);
+                        $route = $request->get('_route');
+                        if($route == "app_groupconversation_demoteadmin"){
+                            if ($this->getUser()->getProfile() == $groupConversation->getOwner()){
+                                if ($adminsCounter == 1){
+                                    return $this->json("tu dois promouvoir quelqu'un administrateur pour pouvoir être rétrogradé",200);
+                                }else{
+                                    $groupConversation->removeAdminMember($user->getRelatedTo());
+                                    $manager->persist($groupConversation);
+                                    $manager->flush();
+                                    return $this->json($user->getRelatedTo()->getUsername()." a bien été rétrogradé",200);
+                                }
+                            }else{
+                                return $this->json("Vous ne pouvez pas faire ça si vous n'êtes pas le propriétaire",200);
+                            }
+                        }else{
+                            $groupConversation->addAdminMember($user->getRelatedTo());
+                            $manager->persist($groupConversation);
+                            $manager->flush();
+                            return $this->json($user->getRelatedTo()->getUsername()." a bien été promu Admin",200);
+                        }
                     }
                 }
             }
         }
-
 
         return $this->json("Vous ne pouvez pas faire ça",200);
     }
@@ -169,7 +184,6 @@ class GroupConversationController extends AbstractController
 
         return $this->json("Une erreur est survenue, n'y aurait-il pas une erreur dans la requete?",200);
     }
-
 
 
 
