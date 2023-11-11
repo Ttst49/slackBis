@@ -185,7 +185,55 @@ class GroupConversationController extends AbstractController
         return $this->json("Une erreur est survenue, n'y aurait-il pas une erreur dans la requete?",200);
     }
 
+/** a faire
+    #[Route('/kick/{id}/{userId}')]
+    public function kickMember(GroupConversation $groupConversation, $userId, ProfileRepository $repository, EntityManagerInterface $manager):Response{
 
+        $user = $repository->findOneBy(["id"=>$userId]);
+
+        if ($user == $groupConversation->getOwner()){
+            return $this->json("Vous ne pouvez pas vous bannir vous-même",200);
+        }
+
+
+        foreach ($groupConversation->getAdminMembers() as $adminMember){
+            foreach ($groupConversation->getGroupMembers() as $groupMember){
+                switch ($user){
+                    case ($this->getUser()->getProfile() == $groupConversation->getOwner() and $user == $groupMember
+                        or $this->getUser()->getProfile() == $groupConversation->getOwner() and $user == $adminMember):
+                        dd($this->getUser(), $user);
+                        $groupConversation->removeGroupMember($user);
+                        $groupConversation->removeAdminMember($user->getRelatedTo());
+                        $manager->persist($groupConversation);
+                        $manager->flush();
+                        return $this->json($user->getRelatedTo()->getUsername()." a bien été banni");
+
+
+                    case ($this->getUser() == $adminMember and $user == $adminMember):
+                        dd("2");
+                        return $this->json("Vous ne pouvez pas bannir quelqu'un adminsitrateur ou plus en tant qu'administrateur",200);
+
+
+                    case ($this->getUser() == $adminMember and $user == $groupMember and $user->getRelatedTo() != $adminMember):
+                        $groupConversation->removeGroupMember($user);
+                        $manager->persist($groupConversation);
+                        $manager->flush();
+                        return $this->json($user->getRelatedTo()->getUsername()." a bien été banni",200);
+
+
+                    case ($this->getUser() == $groupMember and $user == $adminMember):
+                        dd("4");
+                        return $this->json("Vous ne pouvez pas bannir quelqu'un administrateur ou plus",200);
+
+                }
+            }
+        }
+
+
+
+        return $this->json("Quelque chose s'est mal passé",200);
+    }
+**/
 
 
 }
