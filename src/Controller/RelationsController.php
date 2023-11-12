@@ -3,15 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Relation;
-use App\Repository\RelationRepository;
 use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/friend')]
-class FriendController extends AbstractController
+#[Route('api/relations')]
+class RelationsController extends AbstractController
 {
     #[Route('/getFriends')]
     public function getFriends(FriendsService $service):Response{
