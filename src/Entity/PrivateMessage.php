@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PrivateMessageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -32,9 +34,13 @@ class PrivateMessage
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\OneToMany(mappedBy: 'relatedToPrivateMessage', targetEntity: PrivateMessageResponse::class, orphanRemoval: true)]
+    private Collection $privateMessageResponses;
+
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->privateMessageResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,6 +92,36 @@ class PrivateMessage
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PrivateMessageResponse>
+     */
+    public function getPrivateMessageResponses(): Collection
+    {
+        return $this->privateMessageResponses;
+    }
+
+    public function addPrivateMessageResponse(PrivateMessageResponse $privateMessageResponse): static
+    {
+        if (!$this->privateMessageResponses->contains($privateMessageResponse)) {
+            $this->privateMessageResponses->add($privateMessageResponse);
+            $privateMessageResponse->setRelatedToPrivateMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removePrivateMessageResponse(PrivateMessageResponse $privateMessageResponse): static
+    {
+        if ($this->privateMessageResponses->removeElement($privateMessageResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($privateMessageResponse->getRelatedToPrivateMessage() === $this) {
+                $privateMessageResponse->setRelatedToPrivateMessage(null);
+            }
+        }
 
         return $this;
     }
