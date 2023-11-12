@@ -7,6 +7,7 @@ use App\Repository\ProfileRepository;
 use App\Service\FriendsService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,7 @@ class GroupConversationController extends AbstractController
         }
         return $this->json("Aucun groupe a montrer",200);
     }
+
 
 
 

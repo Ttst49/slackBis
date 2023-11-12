@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\GroupConversation;
 use App\Entity\GroupMessage;
+use App\Repository\GroupMessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +43,19 @@ class GroupMessageController extends AbstractController
             }
         }
         return $this->json("Rien à montrer",200);
+    }
+
+
+    #[Route('/delete/{id}/{userId}')]
+    public function deleteGroupMessage(GroupConversation $groupConversation, $userId, GroupMessageRepository $repository, EntityManagerInterface $manager):Response{
+
+        $message = $repository->findOneBy(["id"=>$userId]);
+
+        if ($message->getAuthor() == $this->getUser()){
+            dd("coucou");
+        }
+
+        return $this->json('hop la');
     }
 
 
