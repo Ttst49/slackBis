@@ -46,10 +46,9 @@ class GroupMessageController extends AbstractController
     }
 
 
-    #[Route('/delete/{id}/{userId}')]
-    public function deleteGroupMessage(GroupConversation $groupConversation, $userId, GroupMessageRepository $repository, EntityManagerInterface $manager):Response{
+    #[Route('/delete/{id}')]
+    public function deleteGroupMessage(GroupMessage $message, GroupMessageRepository $repository, EntityManagerInterface $manager):Response{
 
-        $message = $repository->findOneBy(["id"=>$userId]);
 
 
         if ($message->getAuthor() == $this->getUser()->getProfile()){
@@ -60,6 +59,20 @@ class GroupMessageController extends AbstractController
         }
 
         return $this->json("Vous ne semblez pas être l'auteur de ce message",200);
+    }
+
+
+    #[Route('/edit/{id}')]
+    public function editGroupMessage(GroupMessage $message, SerializerInterface $serializer, Request $request, EntityManagerInterface $manager):Response{
+
+        if ($message->getAuthor() == $this->getUser()->getProfile()){
+            $content = json_decode($request->getContent(),true);
+            $message->setContent($content['content']);
+            $manager->persist($message);
+            $manager->flush();
+            return $this->json($message,200,[],["groups"=>"forGroupIndexing"]);
+        }
+        return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
     }
 
 
