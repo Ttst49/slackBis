@@ -5,28 +5,40 @@ namespace App\Entity;
 use App\Repository\PrivateMessageResponseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PrivateMessageResponseRepository::class)]
 class PrivateMessageResponse
 {
     #[ORM\Id]
+    #[Groups(["forPrivateConversation"])]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'privateMessageResponses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?PrivateMessage $relatedToPrivateMessage = null;
+
+
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
+
 
     public function getId(): ?int
     {

@@ -34,6 +34,7 @@ class PrivateMessage
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[Groups(["forPrivateConversation"])]
     #[ORM\OneToMany(mappedBy: 'relatedToPrivateMessage', targetEntity: PrivateMessageResponse::class, orphanRemoval: true)]
     private Collection $privateMessageResponses;
 
