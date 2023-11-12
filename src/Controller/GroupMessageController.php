@@ -51,11 +51,15 @@ class GroupMessageController extends AbstractController
 
         $message = $repository->findOneBy(["id"=>$userId]);
 
-        if ($message->getAuthor() == $this->getUser()){
-            dd("coucou");
+
+        if ($message->getAuthor() == $this->getUser()->getProfile()){
+            $message->setContent("Message supprimé");
+            $manager->persist($message);
+            $manager->flush();
+            return $this->json("Le message a bien été supprimé",200);
         }
 
-        return $this->json('hop la');
+        return $this->json("Vous ne semblez pas être l'auteur de ce message",200);
     }
 
 
