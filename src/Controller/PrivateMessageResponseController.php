@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\PrivateMessage;
 use App\Entity\PrivateMessageResponse;
+use App\Repository\PrivateMessageResponseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,20 @@ class PrivateMessageResponseController extends AbstractController
         }
 
         return $this->json("Vous ne pouvez pas faire ça",200);
+    }
+
+
+    #[Route('/remove/{id}')]
+    public function removePrivateMessageResponse(PrivateMessageResponse $response, EntityManagerInterface $manager):Response{
+
+
+        if ($response->getAuthor() == $this->getUser()->getProfile()){
+            $manager->remove($response);
+            $manager->flush();
+            return $this->json("Votre reponse a bien été supprimée",200);
+        }
+
+        return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
     }
 
 }
