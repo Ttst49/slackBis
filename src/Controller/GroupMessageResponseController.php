@@ -18,7 +18,7 @@ class GroupMessageResponseController extends AbstractController
 {
 
     #[Route('/send/{id}')]
-    public function sendPrivateMessageResponse(GroupMessage $message, EntityManagerInterface $manager, SerializerInterface $serializer,Request $request):Response{
+    public function sendGroupMessageResponse(GroupMessage $message, EntityManagerInterface $manager, SerializerInterface $serializer,Request $request):Response{
 
         foreach ($message->getGroupConversation()->getGroupMembers() as $member){
             if ($member == $this->getUser()->getProfile()){
@@ -33,6 +33,20 @@ class GroupMessageResponseController extends AbstractController
         }
 
         return $this->json("Vous ne pouvez pas faire ça",200);
+    }
+
+
+    #[Route('/remove/{id}')]
+    public function removeGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager):Response{
+
+
+        if ($response->getAuthor() == $this->getUser()->getProfile()){
+            $manager->remove($response);
+            $manager->flush();
+            return $this->json("Votre reponse a bien été supprimée",200);
+        }
+
+        return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
     }
 
 }
