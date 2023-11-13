@@ -49,4 +49,19 @@ class GroupMessageResponseController extends AbstractController
         return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
     }
 
+    #[Route('/edit/{id}')]
+    public function editGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager, Request $request):Response{
+
+        if ($response->getAuthor() == $this->getUser()->getProfile()){
+            $content = json_decode($request->getContent(),true);
+            $response->setDate(new \DateTime());
+            $response->setContent($content['content']);
+            $manager->persist($response);
+            $manager->flush();
+            return $this->json($response,200,[],["groups"=>"forGroupIndexing"]);
+        }
+
+        return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
+    }
+
 }
