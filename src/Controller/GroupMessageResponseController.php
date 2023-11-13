@@ -32,7 +32,6 @@ class GroupMessageResponseController extends AbstractController
             }
         }
 
-
         return $this->json("Vous ne pouvez pas faire ça",200);
     }
 
