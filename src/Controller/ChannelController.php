@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/channel')]
 class ChannelController extends AbstractController
 {
-    #[Route('/show/{id}', name: 'app_channel')]
+    #[Route('/show/{id}',methods: "GET")]
     public function showChannel(Channel $channel): Response
     {
 
@@ -22,14 +22,14 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/showAll')]
+    #[Route('/showAll',methods: "GET")]
     public function indexChannels(ChannelRepository $repository):Response{
 
         return $this->json($repository->findAll(),200);
     }
 
 
-    #[Route('/create')]
+    #[Route('/create',methods: "POST")]
     public function createChannel(SerializerInterface $serializer, Request $request,EntityManagerInterface $manager):Response{
 
         $channel = $serializer->deserialize($request->getContent(),Channel::class,"json");
@@ -43,7 +43,8 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/remove/{id}')]
+    #[Route('/remove/{id}',methods: "DELETE")]
+
     public function removeChannel(Channel $channel, EntityManagerInterface $manager):Response{
 
 
@@ -57,7 +58,7 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/edit/{id}')]
+    #[Route('/edit/{id}',methods: "PUT")]
     public function editChannel(SerializerInterface $serializer, Channel $channel, EntityManagerInterface $manager,Request $request):Response{
 
         if ($channel->getOwner() == $this->getUser()->getProfile()){
@@ -68,6 +69,14 @@ class ChannelController extends AbstractController
         }
 
         return $this->json("Vous ne pouvez modifier un channel dont vous n'êtes pas l'auteur",200);
+    }
+
+
+    public function joinChannel(Channel $channel):Response{
+
+        $channelMembers = $channel->getChannelMembers();
+
+        return $this->json("oui");
     }
 
 

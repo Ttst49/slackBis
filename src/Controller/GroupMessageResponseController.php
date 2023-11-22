@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class GroupMessageResponseController extends AbstractController
 {
 
-    #[Route('/send/{id}')]
+    #[Route('/send/{id}',methods: "POST")]
     public function sendGroupMessageResponse(GroupMessage $message, EntityManagerInterface $manager, SerializerInterface $serializer,Request $request):Response{
 
         foreach ($message->getGroupConversation()->getGroupMembers() as $member){
@@ -34,7 +34,7 @@ class GroupMessageResponseController extends AbstractController
     }
 
 
-    #[Route('/remove/{id}')]
+    #[Route('/remove/{id}',methods: "DELETE")]
     public function removeGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager):Response{
 
 
@@ -47,7 +47,7 @@ class GroupMessageResponseController extends AbstractController
         return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
     }
 
-    #[Route('/edit/{id}')]
+    #[Route('/edit/{id}',methods: "PUT")]
     public function editGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager, Request $request, SerializerInterface $serializer):Response{
 
         if ($response->getAuthor() == $this->getUser()->getProfile()){

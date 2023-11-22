@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/group/message')]
 class GroupMessageController extends AbstractController
 {
-    #[Route('/send/{id}')]
+    #[Route('/send/{id}',methods: "POST")]
     public function sendMessage(GroupConversation $groupConversation, SerializerInterface $serializer, EntityManagerInterface $manager, Request $request): Response
     {
         foreach ($groupConversation->getGroupMembers() as $member){
@@ -34,7 +34,7 @@ class GroupMessageController extends AbstractController
     }
 
 
-    #[Route('/show/{id}')]
+    #[Route('/show/{id}',methods: "GET")]
     public function showGroupMessage(GroupMessage $groupMessage):Response{
 
         foreach($groupMessage->getGroupConversation()->getGroupMembers() as $member){
@@ -46,7 +46,7 @@ class GroupMessageController extends AbstractController
     }
 
 
-    #[Route('/delete/{id}')]
+    #[Route('/delete/{id}',methods: "DELETE")]
     public function deleteGroupMessage(GroupMessage $message, GroupMessageRepository $repository, EntityManagerInterface $manager):Response{
 
 
@@ -62,7 +62,7 @@ class GroupMessageController extends AbstractController
     }
 
 
-    #[Route('/edit/{id}')]
+    #[Route('/edit/{id}',methods: "PUT")]
     public function editGroupMessage(GroupMessage $message, SerializerInterface $serializer, Request $request, EntityManagerInterface $manager):Response{
 
         if ($message->getAuthor() == $this->getUser()->getProfile()){

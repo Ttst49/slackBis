@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/group/conversation')]
 class GroupConversationController extends AbstractController
 {
-    #[Route('/show/{id}')]
+    #[Route('/show/{id}',methods: "GET")]
     public function showGroupConversation(GroupConversation $groupConversation):Response{
 
         foreach ($groupConversation->getGroupMembers() as $groupMember){
@@ -69,8 +69,8 @@ class GroupConversationController extends AbstractController
     }
 
 
-    #[Route('/demote/admin/{id}/{userId}',name: "app_groupconversation_demoteadmin")]
-    #[Route('/promote/admin/{id}/{userId},',name: "app_groupconversation_promoteadmin")]
+    #[Route('/demote/admin/{id}/{userId}',methods: "GET")]
+    #[Route('/promote/admin/{id}/{userId},',methods: "GET")]
     public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository,EntityManagerInterface $manager,Request $request):Response{
 
         $adminsCounter = $groupConversation->getAdminMembers()->count();
@@ -109,7 +109,7 @@ class GroupConversationController extends AbstractController
     }
 
 
-    #[Route('/promote/owner/{id}/{userId}')]
+    #[Route('/promote/owner/{id}/{userId}',methods: "GET")]
     public function promoteOwner(GroupConversation $groupConversation, $userId, ProfileRepository $repository, EntityManagerInterface $manager):Response{
 
         if ($this->getUser()->getProfile() == $groupConversation->getOwner()){
@@ -131,7 +131,7 @@ class GroupConversationController extends AbstractController
     }
 
 
-    #[Route('/leave/{id}')]
+    #[Route('/leave/{id}',methods: "GET")]
     public function leaveGroupConversation(GroupConversation $groupConversation,EntityManagerInterface $manager):Response{
 
         $adminsCounter = $groupConversation->getAdminMembers()->count();
@@ -160,7 +160,7 @@ class GroupConversationController extends AbstractController
         return $this->json("une erreur est survenue",200);
     }
 
-    #[Route('/add/{id}')]
+    #[Route('/add/{id}',methods: "POST")]
     public function addNewMember(GroupConversation $groupConversation, Request $request, ProfileRepository $repository, EntityManagerInterface $manager, FriendsService $service):Response{
 
         $friends = $service->getFriends();
@@ -243,7 +243,7 @@ class GroupConversationController extends AbstractController
     }
 **/
 
-    #[Route("/showAll")]
+    #[Route("/showAll",methods: "GET")]
     public function showConversations(GroupConversationRepository $repository):Response{
 
         $allConversations = [];

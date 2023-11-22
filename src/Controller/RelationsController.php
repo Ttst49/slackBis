@@ -12,14 +12,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/relations')]
 class RelationsController extends AbstractController
 {
-    #[Route('/getFriends')]
+    #[Route('/getFriends',methods: "GET")]
     public function getFriends(FriendsService $service):Response{
         $friends = $service->getFriends();
 
         return $this->json($friends,200,[],["groups"=>"forIndexingProfile"]);
     }
 
-    #[Route('/remove/{id}')]
+#[Route('/remove/{id}',methods: "DELETE")]
     public function removeFriend(Relation $relation,EntityManagerInterface $manager):Response{
 
         if ($this->getUser() == $relation->getUserA()->getRelatedTo() or $this->getUser() == $relation->getUserB()->getRelatedTo()){
@@ -33,11 +33,5 @@ class RelationsController extends AbstractController
 }
 
 
-# entité privateconversation et private message
-# pour les conv de groupe = new entité qui a un tableau de user au lieu de seulement 2 user comme dans les conv privées
-# système admin avec droits
-# ajouter des reponses à chaque message
-# entité privatemessageresponse groupmessageresponse chanelmessageresponse
-# entité image et controlleur image associer les images à une entité message
 # limiter le nombres de messages qu'on voit avec le bundle de pagination ou à la main dans le repo
 # bien changer les noms pour qu'ils ressemlbent aux entités

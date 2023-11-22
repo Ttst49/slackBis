@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class ImageController extends AbstractController
 {
-    #[Route('/image', name: 'app_image')]
+    #[Route('/image', methods: "POST")]
     public function addImage(Request $request, EntityManagerInterface $manager,ImagePostProcessing $postProcessing): Response
     {
 

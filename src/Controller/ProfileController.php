@@ -15,13 +15,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('api/')]
 class ProfileController extends AbstractController
 {
-    #[Route('profile/show/{id}', name: 'app_user',methods: 'GET')]
+    #[Route('profile/show/{id}', methods: 'GET')]
     public function showProfile(User $user): Response
     {
         return $this->json($user,200,[],["groups"=>"forIndexingProfile"]);
     }
 
-    #[Route('profile/showAll')]
+    #[Route('profile/showAll', methods: "GET")]
     public function showAllUser(UserRepository $repository):Response{
 
         $users=[];

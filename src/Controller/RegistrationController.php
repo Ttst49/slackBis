@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/api/register', name: 'app_register_api',methods: "POST")]
+    #[Route('/api/register', methods: "POST")]
     public function registerApi(SerializerInterface $serializer,Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $manager): Response
     {
 

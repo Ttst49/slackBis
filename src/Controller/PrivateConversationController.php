@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\PrivateConversation;
 use App\Entity\Profile;
-use App\Repository\RelationRepository;
 use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/private/conversation')]
 class PrivateConversationController extends AbstractController
 {
-    #[Route('/create/{id}', name: 'app_private_conversation')]
+    #[Route('/create/{id}', methods: "POST")]
     public function index(Profile $profile, FriendsService $friendsService,EntityManagerInterface $manager): Response
     {
         $friends = $friendsService->getFriends();
@@ -35,7 +34,7 @@ class PrivateConversationController extends AbstractController
     }
 
 
-    #[Route('/showMessages/{id}')]
+    #[Route('/showMessages/{id}',methods: "GET")]
     public function showPrivateMessagesFromPrivateConversation(PrivateConversation $privateConversation):Response{
 
         if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo() or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){

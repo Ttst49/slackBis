@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\PrivateMessage;
 use App\Entity\PrivateMessageResponse;
-use App\Repository\PrivateMessageResponseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/private/response')]
 class PrivateMessageResponseController extends AbstractController
 {
-    #[Route('/send/{id}')]
+    #[Route('/send/{id}',methods: "POST")]
     public function sendPrivateMessageResponse(PrivateMessage $message, EntityManagerInterface $manager, SerializerInterface $serializer,Request $request):Response{
 
 
@@ -35,7 +34,7 @@ class PrivateMessageResponseController extends AbstractController
     }
 
 
-    #[Route('/remove/{id}')]
+    #[Route('/remove/{id}',methods: "DELETE")]
     public function removePrivateMessageResponse(PrivateMessageResponse $response, EntityManagerInterface $manager):Response{
 
 
@@ -49,7 +48,7 @@ class PrivateMessageResponseController extends AbstractController
     }
 
 
-    #[Route('/edit/{id}')]
+    #[Route('/edit/{id}',methods: "PUT")]
     public function editPrivateMessageResponse(SerializerInterface $serializer,PrivateMessageResponse $response, EntityManagerInterface $manager, Request $request):Response{
 
         if ($response->getAuthor() == $this->getUser()->getProfile()){

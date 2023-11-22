@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\Request;
-use App\Repository\RelationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route("api/request")]
 class RequestController extends AbstractController
 {
-    #[Route('/send/{id}', name: 'app_request')]
+    #[Route('/send/{id}', methods: "POST")]
     public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager): Response
     {
         $request = new Request();
@@ -44,7 +43,7 @@ class RequestController extends AbstractController
         return $this->json("Votre requête a bien été envoyé à ".$request->getRecipient()->getRelatedTo()->getUsername(),200);
     }
 
-    #[Route("/get/{id}")]
+    #[Route("/get/{id}",methods: "GET")]
     public function getRequestInfo(Request $request):Response{
 
         if ($request->getRecipient()->getRelatedTo() != $this->getUser()){
@@ -55,7 +54,7 @@ class RequestController extends AbstractController
     }
 
 
-    #[Route('/accept/{id}')]
+    #[Route('/accept/{id}',methods: "POST")]
     public function acceptRequest(Request $request,EntityManagerInterface $manager):Response{
 
         $relation = new Relation();
@@ -69,7 +68,7 @@ class RequestController extends AbstractController
        return $this->json("Vous avez ajouté ".$request->getSender()->getRelatedTo()->getUsername(),200);
     }
 
-    #[Route('/deny/{id}')]
+    #[Route('/deny/{id}',methods: "POST")]
     public function denyRequest(Request $request,EntityManagerInterface $manager):Response{
 
         $manager->remove($request);
@@ -78,7 +77,7 @@ class RequestController extends AbstractController
         return $this->json("Vous avez refusé la demande de ".$request->getSender()->getRelatedTo()->getUsername());
     }
 
-    #[Route('/cancel/{id}')]
+    #[Route('/cancel/{id}',methods: "POST")]
     public function cancelRequest(Request $request, EntityManagerInterface $manager):Response{
 
         if ($request->getSender()->getRelatedTo() != $this->getUser()){
