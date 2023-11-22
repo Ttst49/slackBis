@@ -48,13 +48,12 @@ class GroupMessageResponseController extends AbstractController
     }
 
     #[Route('/edit/{id}')]
-    public function editGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager, Request $request):Response{
+    public function editGroupMessageResponse(GroupMessageResponse $response, EntityManagerInterface $manager, Request $request, SerializerInterface $serializer):Response{
 
         if ($response->getAuthor() == $this->getUser()->getProfile()){
-            $content = json_decode($request->getContent(),true);
-            $response->setDate(new \DateTime());
-            $response->setContent($content['content']);
-            $manager->persist($response);
+            $responseDeserialized = $serializer->deserialize($request->getContent(),GroupMessageResponse::class,"json",array("object_to_populate"=>$response));
+            $responseDeserialized->setDate(new \DateTime());
+            $manager->persist($responseDeserialized);
             $manager->flush();
             return $this->json($response,200,[],["groups"=>"forGroupIndexing"]);
         }
