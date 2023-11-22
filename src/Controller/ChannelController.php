@@ -19,9 +19,8 @@ class ChannelController extends AbstractController
     }
 
 
-    #
+    #[Route('/showAll')]
     public function indexChannels(ChannelRepository $repository):Response{
-
 
         return $this->json($repository->findAll(),200);
     }
