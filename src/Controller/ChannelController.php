@@ -72,7 +72,7 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/join/{id}')]
+    #[Route('/join/{id}',methods: "POST")]
     public function joinChannel(Channel $channel):Response{
 
         $channelMembers = $channel->getChannelMembers();
@@ -87,7 +87,13 @@ class ChannelController extends AbstractController
     }
 
 
+    #[Route('/leave/{id}',methods: "POST")]
+    public function leaveChannel(Channel $channel):Response{
 
+
+
+        return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti",200);
+    }
 
 
 }
