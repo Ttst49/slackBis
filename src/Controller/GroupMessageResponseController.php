@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\GroupMessage;
 use App\Entity\GroupMessageResponse;
-use App\Entity\PrivateMessage;
-use App\Entity\PrivateMessageResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
