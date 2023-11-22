@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,6 +37,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(inversedBy: 'relatedTo', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $profile = null;
+
+    #[ORM\ManyToMany(targetEntity: Channel::class, mappedBy: 'adminChannelMembers')]
+    private Collection $channels;
+
+    public function __construct()
+    {
+        $this->channels = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,6 +124,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfile(Profile $profile): static
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Channel>
+     */
+    public function getChannels(): Collection
+    {
+        return $this->channels;
+    }
+
+    public function addChannel(Channel $channel): static
+    {
+        if (!$this->channels->contains($channel)) {
+            $this->channels->add($channel);
+            $channel->addAdminChannelMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChannel(Channel $channel): static
+    {
+        if ($this->channels->removeElement($channel)) {
+            $channel->removeAdminChannelMember($this);
+        }
 
         return $this;
     }

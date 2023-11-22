@@ -51,6 +51,9 @@ class Profile
     #[ORM\OneToMany(mappedBy: 'relatedToProfileB', targetEntity: PrivateConversation::class, orphanRemoval: true)]
     private Collection $privateConversationsB;
 
+    #[ORM\ManyToMany(targetEntity: Channel::class, mappedBy: 'channelMembers')]
+    private Collection $channels;
+
 
     public function __construct()
     {
@@ -60,6 +63,7 @@ class Profile
         $this->privatesMessagesFromUser = new ArrayCollection();
         $this->privateConversationsA = new ArrayCollection();
         $this->privateConversationsB = new ArrayCollection();
+        $this->channels = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -265,6 +269,33 @@ class Profile
             if ($privateConversationsB->getRelatedToProfileB() === $this) {
                 $privateConversationsB->setRelatedToProfileB(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Channel>
+     */
+    public function getChannels(): Collection
+    {
+        return $this->channels;
+    }
+
+    public function addChannel(Channel $channel): static
+    {
+        if (!$this->channels->contains($channel)) {
+            $this->channels->add($channel);
+            $channel->addChannelMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChannel(Channel $channel): static
+    {
+        if ($this->channels->removeElement($channel)) {
+            $channel->removeChannelMember($this);
         }
 
         return $this;
