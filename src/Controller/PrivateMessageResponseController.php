@@ -50,15 +50,14 @@ class PrivateMessageResponseController extends AbstractController
 
 
     #[Route('/edit/{id}')]
-    public function editPrivateMessageResponse(PrivateMessageResponse $response, EntityManagerInterface $manager, Request $request):Response{
+    public function editPrivateMessageResponse(SerializerInterface $serializer,PrivateMessageResponse $response, EntityManagerInterface $manager, Request $request):Response{
 
         if ($response->getAuthor() == $this->getUser()->getProfile()){
             $response->setDate(new \DateTime());
-            $content = json_decode($request->getContent(),true);
-            $response->setContent($content['content']);
-            $manager->persist($response);
+            $responseDeserialized = $serializer->deserialize($request->getContent(),PrivateMessageResponse::class,"json",array("object_to_populate"=>$response));
+            $manager->persist($responseDeserialized);
             $manager->flush();
-            return $this->json($response,200,[],["groups"=>"forPrivateConversation"]);
+            return $this->json($responseDeserialized,200,[],["groups"=>"forPrivateConversation"]);
         }
 
         return $this->json("Vous ne semblez pas être l'auteur de cette réponse",200);
