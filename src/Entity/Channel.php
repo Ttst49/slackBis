@@ -18,6 +18,11 @@ class Channel
     #[ORM\Column]
     private ?int $id = null;
 
+
+    #[Groups(["forChannel"])]
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $name = null;
+
     #[Groups(["forChannel"])]
     #[ORM\OneToMany(mappedBy: 'associatedToChannel', targetEntity: ChannelMessage::class, orphanRemoval: true)]
     private Collection $channelMessages;
@@ -44,6 +49,8 @@ class Channel
         $this->channelMessages = new ArrayCollection();
         $this->channelMembers = new ArrayCollection();
         $this->adminChannelMembers = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+        $this->name = "Nom par défaut";
     }
 
     public function getId(): ?int
@@ -149,6 +156,18 @@ class Channel
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
         return $this;
     }
