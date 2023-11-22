@@ -65,15 +65,14 @@ class PrivateMessageController extends AbstractController
 
 
     #[Route('/edit/{id}',methods: 'PUT')]
-    public function editPrivateMessage(PrivateMessage $privateMessage,EntityManagerInterface $manager, Request $request):Response{
+    public function editPrivateMessage(SerializerInterface $serializer, PrivateMessage $privateMessage,EntityManagerInterface $manager, Request $request):Response{
 
         if ($privateMessage->getAuthor() == $this->getUser()->getProfile()){
             $privateMessage->setDate(new \DateTime());
-            $content = json_decode($request->getContent(),true);
-            $privateMessage->setContent($content['content']);
-            $manager->persist($privateMessage);
+            $privateMessageDeserialized = $serializer->deserialize($request->getContent(),PrivateMessage::class,"json",array("object_to_populate"=>$privateMessage));
+            $manager->persist($privateMessageDeserialized);
             $manager->flush();
-            return $this->json($privateMessage->getContent(),200);
+            return $this->json($privateMessageDeserialized,200);
         }
         return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
     }
