@@ -66,11 +66,10 @@ class GroupMessageController extends AbstractController
     public function editGroupMessage(GroupMessage $message, SerializerInterface $serializer, Request $request, EntityManagerInterface $manager):Response{
 
         if ($message->getAuthor() == $this->getUser()->getProfile()){
-            $content = json_decode($request->getContent(),true);
-            $message->setContent($content['content']);
-            $manager->persist($message);
+            $messageDeserialized = $serializer->deserialize($request->getContent(),GroupMessage::class,"json",array("object_to_populate"=>$message));
+            $manager->persist($messageDeserialized);
             $manager->flush();
-            return $this->json($message,200,[],["groups"=>"forGroupIndexing"]);
+            return $this->json($messageDeserialized,200,[],["groups"=>"forGroupIndexing"]);
         }
         return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
     }
