@@ -82,13 +82,10 @@ class PrivateMessageController extends AbstractController
     #[Route('/show/{id}',methods: "GET")]
     public function showPrivateMessage(PrivateMessage $privateMessage, ImagePostProcessing $postProcessing):Response{
 
-        $imageIdsArray = $privateMessage->getImages();
-        dd($imageIdsArray);
-        if ($imageIdsArray){
-            $imagesUrls = $postProcessing->getImagesUrlFromImages($imageIdsArray);
-            $privateMessage->setImagesUrls($imagesUrls);
-        }
+            $postProcessing->getImagesUrlFromImages($privateMessage);
 
-        return $this->json($privateMessage,200,[],["groups"=>"forPrivateConversation"]);
+
+
+        return $this->json($privateMessage,200,[],["groups"=>"forShowingPrivateMessage"]);
     }
 }

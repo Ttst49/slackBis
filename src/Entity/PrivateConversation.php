@@ -16,7 +16,7 @@ class PrivateConversation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\OneToMany(mappedBy: 'associatedToConversation', targetEntity: PrivateMessage::class, orphanRemoval: true)]
     private Collection $privateMessages;
 

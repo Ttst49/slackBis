@@ -3,9 +3,11 @@
 namespace App\Service;
 
 use App\Entity\GroupMessage;
+use App\Entity\Image;
 use App\Entity\PrivateMessage;
 use App\Repository\ImageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\Entity;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -22,21 +24,24 @@ class ImagePostProcessing
         $this->uploaderHelper = $uploaderHelper;
     }
 
-    public function getImagesUrlFromImages(array $images): ArrayCollection
+    public function getImagesUrlFromImages(PrivateMessage $privateMessage): PrivateMessage
     {
 
         $imageUrls = new ArrayCollection();
 
-        foreach ($images as $image) {
+
+        foreach ($privateMessage->getImages() as $image) {
             $imageFound = $this->imageRepository->find($image);
             if ($imageFound){
-                $newImageURL = $this->cacheManager->getBrowserPath($this->uploaderHelper->asset($imageFound),"my_thumb");
+                $newImageURL = ["id"=>$imageFound->getId(), "url"=>$this->cacheManager->getBrowserPath($this->uploaderHelper->asset($imageFound),"thumbnail")];
                 $imageUrls->add($newImageURL);
             }
         }
+        $privateMessage->setImagesUrls($imageUrls);
 
-        return $imageUrls;
+        return $privateMessage;
     }
+
 
     public function getImagesFromIds(array $imageIds):array{
 
@@ -49,6 +54,14 @@ class ImagePostProcessing
         }
 
         return $images;
+    }
+
+
+
+    public function getThumbnailUrlFromImage(Image $image){
+
+
+        return ["id"=>$image->getId(), "url"=>$this->cacheManager->getBrowserPath($this->uploaderHelper->asset($image),"thumbnail")];
     }
 
 

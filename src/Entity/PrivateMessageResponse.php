@@ -11,21 +11,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class PrivateMessageResponse
 {
     #[ORM\Id]
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 

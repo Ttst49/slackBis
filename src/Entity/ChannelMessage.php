@@ -5,19 +5,23 @@ namespace App\Entity;
 use App\Repository\ChannelMessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ChannelMessageRepository::class)]
 class ChannelMessage
 {
+    #[Groups(["forChannel"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forChannel"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
+    #[Groups(["forChannel"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
@@ -25,6 +29,7 @@ class ChannelMessage
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $associatedToChannel = null;
 
+    #[Groups(["forChannel"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 

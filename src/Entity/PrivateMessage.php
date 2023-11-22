@@ -13,18 +13,18 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 #[ORM\Entity(repositoryClass: PrivateMessageRepository::class)]
 class PrivateMessage
 {
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\ManyToOne(inversedBy: 'privatesMessagesFromUser')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
@@ -35,15 +35,15 @@ class PrivateMessage
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[Groups(["forPrivateConversation"])]
+    #[Groups(["forPrivateConversation","forShowingPrivateMessage"])]
     #[ORM\OneToMany(mappedBy: 'relatedToPrivateMessage', targetEntity: PrivateMessageResponse::class, orphanRemoval: true)]
     private Collection $privateMessageResponses;
 
-    #[Groups(["forPrivateConversation"])]
     #[ORM\OneToMany(mappedBy: 'privateMessage', targetEntity: Image::class, orphanRemoval: true)]
     #[ORM\JoinColumn(nullable: true)]
     private Collection $images;
 
+    #[Groups(["forShowingPrivateMessage"])]
     #[SerializedName("images")]
     private ArrayCollection $imagesUrls;
 

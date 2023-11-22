@@ -7,28 +7,35 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ChannelRepository::class)]
 class Channel
 {
+    #[Groups(["forChannel"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(["forChannel"])]
     #[ORM\OneToMany(mappedBy: 'associatedToChannel', targetEntity: ChannelMessage::class, orphanRemoval: true)]
     private Collection $channelMessages;
 
+    #[Groups(["forChannel"])]
     #[ORM\ManyToMany(targetEntity: Profile::class, inversedBy: 'channels')]
     private Collection $channelMembers;
 
+    #[Groups(["forChannel"])]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'channels')]
     private Collection $adminChannelMembers;
 
+    #[Groups(["forChannel"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $owner = null;
 
+    #[Groups(["forChannel"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 

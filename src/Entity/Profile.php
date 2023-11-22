@@ -16,7 +16,9 @@ class Profile
         "forGroupCreation",
         "forGroupIndexing",
         "forGroupShowing",
-        "forImageIndexing"])]
+        "forImageIndexing",
+        "forShowingPrivateMessage",
+        "forChannel"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -24,13 +26,17 @@ class Profile
 
     #[Groups(["forIndexingProfile",
         "forRequest",
-        "forPrivateConversation"])]
+        "forPrivateConversation",
+        "forChannel"
+        ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
     #[Groups(["forIndexingProfile",
         "forRequest",
-        "forPrivateConversation"])]
+        "forPrivateConversation",
+        "forChannel"
+    ])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
@@ -38,7 +44,7 @@ class Profile
     #[Groups(["forRequest",
         "forPrivateConversation",
         "forGroupCreation",
-        "forGroupIndexing"])]
+        "forGroupIndexing",])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
 
