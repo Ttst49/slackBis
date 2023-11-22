@@ -43,7 +43,7 @@ class ChannelController extends AbstractController
     }
 
 
-
+    #[Route('/remove/{id}')]
     public function removeChannel(Channel $channel, EntityManagerInterface $manager):Response{
 
 
