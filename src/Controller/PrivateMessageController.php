@@ -4,28 +4,49 @@ namespace App\Controller;
 
 use App\Entity\PrivateConversation;
 use App\Entity\PrivateMessage;
+use App\Repository\ImageRepository;
+use App\Service\ImagePostProcessing;
 use Doctrine\ORM\EntityManagerInterface;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 #[Route('/api/private/message')]
 class PrivateMessageController extends AbstractController
 {
     #[Route('/send/{id}', name: 'app_private_message')]
-    public function sendPrivateMessage(PrivateConversation $privateConversation,SerializerInterface $serializer,Request $request,EntityManagerInterface $manager): Response
+    public function sendPrivateMessage(PrivateConversation $privateConversation,
+                                       SerializerInterface $serializer,
+                                       Request $request,
+                                       EntityManagerInterface $manager,
+                                       ImagePostProcessing $postProcessing,
+                                       UploaderHelper $uploaderHelper,
+                                       CacheManager $cacheManager,
+                                       ImageRepository $repository
+    ): Response
     {
         if ($this->getUser() === $privateConversation->getRelatedToProfileB()->getRelatedTo()
             or $this->getUser() === $privateConversation->getRelatedToProfileA()->getRelatedTo()){
             $privateMessage = $serializer->deserialize($request->getContent(),PrivateMessage::class,"json");
+
+            $imageIdsArray = $privateMessage->getAssociatedImages();
+            if ($imageIdsArray){
+                $newImages = $postProcessing->getImagesFromIds($imageIdsArray);
+                foreach ($newImages as $image){
+                    $privateMessage->addImage($image);
+                }
+            }
+
             $privateMessage->setAuthor($this->getUser()->getProfile());
             $privateMessage->setAssociatedToConversation($privateConversation);
             $manager->persist($privateMessage);
             $manager->flush();
 
-            return $this->json($privateMessage->getContent(),200);
+            return $this->json($privateMessage,200,[],["groups"=>"forPrivateConversation"]);
         }
 
         return $this->json("Vous ne pouvez pas faire cela",200);
@@ -55,5 +76,19 @@ class PrivateMessageController extends AbstractController
             return $this->json($privateMessage->getContent(),200);
         }
         return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
+    }
+
+
+    #[Route('/show/{id}',methods: "GET")]
+    public function showPrivateMessage(PrivateMessage $privateMessage, ImagePostProcessing $postProcessing):Response{
+
+        $imageIdsArray = $privateMessage->getImages();
+        dd($imageIdsArray);
+        if ($imageIdsArray){
+            $imagesUrls = $postProcessing->getImagesUrlFromImages($imageIdsArray);
+            $privateMessage->setImagesUrls($imagesUrls);
+        }
+
+        return $this->json($privateMessage,200,[],["groups"=>"forPrivateConversation"]);
     }
 }

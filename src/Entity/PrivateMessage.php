@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: PrivateMessageRepository::class)]
 class PrivateMessage
@@ -38,10 +39,21 @@ class PrivateMessage
     #[ORM\OneToMany(mappedBy: 'relatedToPrivateMessage', targetEntity: PrivateMessageResponse::class, orphanRemoval: true)]
     private Collection $privateMessageResponses;
 
+    #[Groups(["forPrivateConversation"])]
+    #[ORM\OneToMany(mappedBy: 'privateMessage', targetEntity: Image::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true)]
+    private Collection $images;
+
+    #[SerializedName("images")]
+    private ArrayCollection $imagesUrls;
+
+    private ?Array $associatedImages = null;
+
     public function __construct()
     {
         $this->date = new \DateTime();
         $this->privateMessageResponses = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -125,5 +137,55 @@ class PrivateMessage
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setPrivateMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getPrivateMessage() === $this) {
+                $image->setPrivateMessage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAssociatedImages(): ?array
+    {
+        return $this->associatedImages;
+    }
+
+    public function setAssociatedImages(?array $associatedImages): void
+    {
+        $this->associatedImages = $associatedImages;
+    }
+
+    public function getImagesUrls(): ArrayCollection
+    {
+        return $this->imagesUrls;
+    }
+
+    public function setImagesUrls(ArrayCollection $imagesUrls): void
+    {
+        $this->imagesUrls = $imagesUrls;
     }
 }

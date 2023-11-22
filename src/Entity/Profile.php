@@ -11,22 +11,34 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
 {
-    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing","forGroupShowing"])]
+    #[Groups(['forIndexingProfile',
+        "forPrivateConversation",
+        "forGroupCreation",
+        "forGroupIndexing",
+        "forGroupShowing",
+        "forImageIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forIndexingProfile", "forRequest","forPrivateConversation"])]
+    #[Groups(["forIndexingProfile",
+        "forRequest",
+        "forPrivateConversation"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[Groups(["forIndexingProfile", "forRequest","forPrivateConversation"])]
+    #[Groups(["forIndexingProfile",
+        "forRequest",
+        "forPrivateConversation"])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastName = null;
 
 
-    #[Groups(["forRequest","forPrivateConversation","forGroupCreation","forGroupIndexing"])]
+    #[Groups(["forRequest",
+        "forPrivateConversation",
+        "forGroupCreation",
+        "forGroupIndexing"])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
 
@@ -54,6 +66,9 @@ class Profile
     #[ORM\ManyToMany(targetEntity: Channel::class, mappedBy: 'channelMembers')]
     private Collection $channels;
 
+    #[ORM\OneToMany(mappedBy: 'uploadedBy', targetEntity: Image::class)]
+    private Collection $images;
+
 
     public function __construct()
     {
@@ -64,6 +79,7 @@ class Profile
         $this->privateConversationsA = new ArrayCollection();
         $this->privateConversationsB = new ArrayCollection();
         $this->channels = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -296,6 +312,36 @@ class Profile
     {
         if ($this->channels->removeElement($channel)) {
             $channel->removeChannelMember($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setUploadedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getUploadedBy() === $this) {
+                $image->setUploadedBy(null);
+            }
         }
 
         return $this;
