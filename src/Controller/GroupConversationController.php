@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\GroupConversation;
+use App\Repository\GroupConversationRepository;
 use App\Repository\ProfileRepository;
 use App\Service\FriendsService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -241,6 +242,20 @@ class GroupConversationController extends AbstractController
         return $this->json("Quelque chose s'est mal passé",200);
     }
 **/
+
+    #[Route("/showAll")]
+    public function showConversations(GroupConversationRepository $repository):Response{
+
+        $allConversations = [];
+        foreach ($repository->findAll() as $groupConversation){
+            foreach ($groupConversation->getGroupMembers() as $groupMember){
+                if ($groupMember == $this->getUser()->getProfile()){
+                    $allConversations[] = $groupConversation;
+                }
+            }
+        }
+        return $this->json($allConversations,200,[],["groups"=>"forGroupShowing"]);
+    }
 
 
 }

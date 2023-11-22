@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
 {
-    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing"])]
+    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing","forGroupShowing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: GroupConversationRepository::class)]
 class GroupConversation
 {
-    #[Groups(["forGroupIndexing"])]
+    #[Groups(["forGroupIndexing","forGroupShowing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,7 +30,7 @@ class GroupConversation
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $adminMembers;
 
-    #[Groups(["forGroupCreation","forGroupIndexing"])]
+    #[Groups(["forGroupCreation","forGroupIndexing","forGroupShowing"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $owner = null;
