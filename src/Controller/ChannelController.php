@@ -72,12 +72,22 @@ class ChannelController extends AbstractController
     }
 
 
+    #[Route('/join/{id}')]
     public function joinChannel(Channel $channel):Response{
 
         $channelMembers = $channel->getChannelMembers();
+        foreach ($channelMembers as $member){
+            if ($member != $this->getUser()->getProfile()){
+                $channel->addChannelMember($this->getUser()->getProfile());
+                return $this->json("Vous avez bien été ajouté au channel ".$channel->getName());
+            }
+        }
 
-        return $this->json("oui");
+        return $this->json("Vous faites visiblement déjà parti de ce channel",200);
     }
+
+
+
 
 
 }
