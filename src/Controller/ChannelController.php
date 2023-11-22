@@ -57,4 +57,18 @@ class ChannelController extends AbstractController
     }
 
 
+    #[Route('/edit/{id}')]
+    public function editChannel(SerializerInterface $serializer, Channel $channel, EntityManagerInterface $manager,Request $request):Response{
+
+        if ($channel->getOwner() == $this->getUser()->getProfile()){
+            $channelDeserialized = $serializer->deserialize($request->getContent(),Channel::class,"json",array("object_to_populate"=>$channel));
+            $manager->persist($channelDeserialized);
+            $manager->flush();
+            return $this->json("Vous avez bien modifié le channel d'id ".$channel->getId(),200);
+        }
+
+        return $this->json("Vous ne pouvez modifier un channel dont vous n'êtes pas l'auteur",200);
+    }
+
+
 }
