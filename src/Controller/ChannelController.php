@@ -125,9 +125,28 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/promote/owner/{id}')]
-    public function promoteToOwner():Response{
-        return true;
+    #[Route('/promote/owner/{id}/{userId}')]
+    public function promoteToOwner(Channel $channel, $userId, UserRepository $repository,EntityManagerInterface $manager):Response{
+
+        $newOwner = $repository->find($userId);
+        $currentUser = $repository->find($this->getUser()->getProfile()->getRelatedTo());
+        if ($newOwner == $currentUser){
+            return $this->json("Vous ne pouvez pas faire cette action sur vous même",200);
+        }
+        if ($currentUser == $channel->getOwner()->getRelatedTo()){
+            foreach ($channel->getChannelMembers() as $member){
+                if ($member === $newOwner->getProfile()){
+                    $channel->setOwner($newOwner->getProfile());
+                    $manager->persist($channel);
+                    $manager->flush();
+                    return $this->json($newOwner->getUsername()." a été promu propriétaire du channel",200);
+                }else{
+                    return $this->json("Cet utilisateur ne fait pas parti de ce channel",200);
+                }
+            }
+        }
+
+        return $this->json("Vous ne pouvez pas faire ça",200);
     }
 
 
