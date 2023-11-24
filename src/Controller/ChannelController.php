@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Repository\ChannelRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -88,8 +89,29 @@ class ChannelController extends AbstractController
 
 
     #[Route('/leave/{id}',methods: "POST")]
-    public function leaveChannel(Channel $channel):Response{
+    public function leaveChannel(Channel $channel,EntityManagerInterface $manager):Response{
 
+        $channelMembers = new ArrayCollection();
+        $channelAdmins = new ArrayCollection();
+        $channelMembers->add($channel->getChannelMembers());
+        $channelAdmins->add($channel->getAdminChannelMembers());
+        if ($channel->getOwner() != $this->getUser()->getProfile()){
+            dd($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo()));
+            if ($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo())){
+                $channel->removeAdminChannelMember($this->getUser()->getProfile()->getRelatedTo());
+                $channel->removeChannelMember($this->getUser()->getProfile());
+                $manager->persist($channel);
+                $manager->flush();
+                return $this->json("Vous avez bien quitté le channel ".$channel->getName(),200);
+            }elseif ($channelMembers->contains($this->getUser()->getProfile())){
+                $channel->removeChannelMember($this->getUser()->getProfile());
+                $manager->persist($channel);
+                $manager->flush();
+                return $this->json("Vous avez bien quitté le channel ".$channel->getName(),200);
+            }
+        }else{
+            return $this->json("Vous ne pouvez pas quitter avant d'avoir promu un nouveau propriétaire",200);
+        }
 
 
         return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti",200);
