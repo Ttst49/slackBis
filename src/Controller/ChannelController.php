@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Repository\ChannelRepository;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -74,12 +75,14 @@ class ChannelController extends AbstractController
 
 
     #[Route('/join/{id}',methods: "POST")]
-    public function joinChannel(Channel $channel):Response{
+    public function joinChannel(Channel $channel,EntityManagerInterface $manager):Response{
 
         $channelMembers = $channel->getChannelMembers();
         foreach ($channelMembers as $member){
             if ($member != $this->getUser()->getProfile()){
                 $channel->addChannelMember($this->getUser()->getProfile());
+                $manager->persist($channel);
+                $manager->flush();
                 return $this->json("Vous avez bien été ajouté au channel ".$channel->getName());
             }
         }
@@ -89,14 +92,18 @@ class ChannelController extends AbstractController
 
 
     #[Route('/leave/{id}',methods: "POST")]
-    public function leaveChannel(Channel $channel,EntityManagerInterface $manager):Response{
+    public function leaveChannel(Channel $channel,EntityManagerInterface $manager, UserRepository $userRepository):Response{
+
 
         $channelMembers = new ArrayCollection();
         $channelAdmins = new ArrayCollection();
-        $channelMembers->add($channel->getChannelMembers());
-        $channelAdmins->add($channel->getAdminChannelMembers());
+        foreach ($channel->getChannelMembers() as $member){
+            $channelMembers->add($member);
+        }
+        foreach ($channel->getAdminChannelMembers() as $adminChannelMember){
+            $channelAdmins->add($adminChannelMember);
+        }
         if ($channel->getOwner() != $this->getUser()->getProfile()){
-            dd($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo()));
             if ($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo())){
                 $channel->removeAdminChannelMember($this->getUser()->getProfile()->getRelatedTo());
                 $channel->removeChannelMember($this->getUser()->getProfile());
@@ -115,6 +122,12 @@ class ChannelController extends AbstractController
 
 
         return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti",200);
+    }
+
+
+    #[Route('/promote/owner/{id}')]
+    public function promoteToOwner():Response{
+        return true;
     }
 
 
