@@ -16,138 +16,152 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/channel')]
 class ChannelController extends AbstractController
 {
-    #[Route('/show/{id}',methods: "GET")]
+    #[Route('/show/{id}', methods: "GET")]
     public function showChannel(Channel $channel): Response
     {
 
-        return $this->json($channel,200,[],["groups"=>"forChannel"]);
+        return $this->json($channel, 200, [], ["groups" => "forChannel"]);
     }
 
 
-    #[Route('/showAll',methods: "GET")]
-    public function indexChannels(ChannelRepository $repository):Response{
+    #[Route('/showAll', methods: "GET")]
+    public function indexChannels(ChannelRepository $repository): Response
+    {
 
-        return $this->json($repository->findAll(),200);
+        return $this->json($repository->findAll(), 200);
     }
 
 
-    #[Route('/create',methods: "POST")]
-    public function createChannel(SerializerInterface $serializer, Request $request,EntityManagerInterface $manager):Response{
+    #[Route('/create', methods: "POST")]
+    public function createChannel(SerializerInterface $serializer, Request $request, EntityManagerInterface $manager): Response
+    {
 
-        $channel = $serializer->deserialize($request->getContent(),Channel::class,"json");
+        $channel = $serializer->deserialize($request->getContent(), Channel::class, "json");
         $channel->setOwner($this->getUser()->getProfile());
         $channel->addAdminChannelMember($this->getUser()->getProfile()->getRelatedTo());
         $channel->addChannelMember($this->getUser()->getProfile());
         $manager->persist($channel);
         $manager->flush();
 
-        return $this->json($channel,201,[],["groups"=>"forChannel"]);
+        return $this->json($channel, 201, [], ["groups" => "forChannel"]);
     }
 
 
-    #[Route('/remove/{id}',methods: "DELETE")]
+    #[Route('/remove/{id}', methods: "DELETE")]
+    public function removeChannel(Channel $channel, EntityManagerInterface $manager): Response
+    {
 
-    public function removeChannel(Channel $channel, EntityManagerInterface $manager):Response{
 
-
-        if ($channel->getOwner() != $this->getUser()->getProfile()){
-            return $this->json("Vous n'êtes pas le propriétaire de ce channel",200);
+        if ($channel->getOwner() != $this->getUser()->getProfile()) {
+            return $this->json("Vous n'êtes pas le propriétaire de ce channel", 200);
         }
 
         $manager->remove($channel);
 
-        return $this->json("Le channel a bien été supprimé",200);
+        return $this->json("Le channel a bien été supprimé", 200);
     }
 
 
-    #[Route('/edit/{id}',methods: "PUT")]
-    public function editChannel(SerializerInterface $serializer, Channel $channel, EntityManagerInterface $manager,Request $request):Response{
+    #[Route('/edit/{id}', methods: "PUT")]
+    public function editChannel(SerializerInterface $serializer, Channel $channel, EntityManagerInterface $manager, Request $request): Response
+    {
 
-        if ($channel->getOwner() == $this->getUser()->getProfile()){
-            $channelDeserialized = $serializer->deserialize($request->getContent(),Channel::class,"json",array("object_to_populate"=>$channel));
+        if ($channel->getOwner() == $this->getUser()->getProfile()) {
+            $channelDeserialized = $serializer->deserialize($request->getContent(), Channel::class, "json", array("object_to_populate" => $channel));
             $manager->persist($channelDeserialized);
             $manager->flush();
-            return $this->json("Vous avez bien modifié le channel d'id ".$channel->getId(),200);
+            return $this->json("Vous avez bien modifié le channel d'id " . $channel->getId(), 200);
         }
 
-        return $this->json("Vous ne pouvez modifier un channel dont vous n'êtes pas l'auteur",200);
+        return $this->json("Vous ne pouvez modifier un channel dont vous n'êtes pas l'auteur", 200);
     }
 
 
-    #[Route('/join/{id}',methods: "POST")]
-    public function joinChannel(Channel $channel,EntityManagerInterface $manager):Response{
+    #[Route('/join/{id}', methods: "POST")]
+    public function joinChannel(Channel $channel, EntityManagerInterface $manager): Response
+    {
 
         $channelMembers = $channel->getChannelMembers();
-        foreach ($channelMembers as $member){
-            if ($member == $this->getUser()->getProfile()){
-                return $this->json("Vous faites visiblement déjà parti de ce channel",200);
+        foreach ($channelMembers as $member) {
+            if ($member == $this->getUser()->getProfile()) {
+                return $this->json("Vous faites visiblement déjà parti de ce channel", 200);
 
             }
         }
         $channel->addChannelMember($this->getUser()->getProfile());
         $manager->persist($channel);
         $manager->flush();
-        return $this->json("Vous avez bien été ajouté au channel ".$channel->getName());
+        return $this->json("Vous avez bien été ajouté au channel " . $channel->getName());
     }
 
 
-    #[Route('/leave/{id}',methods: "POST")]
-    public function leaveChannel(Channel $channel,EntityManagerInterface $manager, UserRepository $userRepository):Response{
+    #[Route('/leave/{id}', methods: "POST")]
+    public function leaveChannel(Channel $channel, EntityManagerInterface $manager, UserRepository $userRepository): Response
+    {
 
 
         $channelMembers = new ArrayCollection();
         $channelAdmins = new ArrayCollection();
-        foreach ($channel->getChannelMembers() as $member){
+        foreach ($channel->getChannelMembers() as $member) {
             $channelMembers->add($member);
         }
-        foreach ($channel->getAdminChannelMembers() as $adminChannelMember){
+        foreach ($channel->getAdminChannelMembers() as $adminChannelMember) {
             $channelAdmins->add($adminChannelMember);
         }
-        if ($channel->getOwner() != $this->getUser()->getProfile()){
-            if ($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo())){
+        if ($channel->getOwner() != $this->getUser()->getProfile()) {
+            if ($channelAdmins->contains($this->getUser()->getProfile()->getRelatedTo())) {
                 $channel->removeAdminChannelMember($this->getUser()->getProfile()->getRelatedTo());
                 $channel->removeChannelMember($this->getUser()->getProfile());
                 $manager->persist($channel);
                 $manager->flush();
-                return $this->json("Vous avez bien quitté le channel ".$channel->getName(),200);
-            }elseif ($channelMembers->contains($this->getUser()->getProfile())){
+                return $this->json("Vous avez bien quitté le channel " . $channel->getName(), 200);
+            } elseif ($channelMembers->contains($this->getUser()->getProfile())) {
                 $channel->removeChannelMember($this->getUser()->getProfile());
                 $manager->persist($channel);
                 $manager->flush();
-                return $this->json("Vous avez bien quitté le channel ".$channel->getName(),200);
+                return $this->json("Vous avez bien quitté le channel " . $channel->getName(), 200);
             }
-        }else{
-            return $this->json("Vous ne pouvez pas quitter avant d'avoir promu un nouveau propriétaire",200);
+        } else {
+            return $this->json("Vous ne pouvez pas quitter avant d'avoir promu un nouveau propriétaire", 200);
         }
 
 
-        return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti",200);
+        return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti", 200);
     }
 
+/*
+    #[Route('/promote/admin/{id}/{userId}',name: "promoteAdmin")]
+    #[Route('/promote/owner/{id}/{userId}',name: "promoteOwner")]
+    public function promoteToOwner(Channel $channel, $userId, UserRepository $repository, EntityManagerInterface $manager, Request $request): Response
+    {
 
-    #[Route('/promote/owner/{id}/{userId}')]
-    public function promoteToOwner(Channel $channel, $userId, UserRepository $repository,EntityManagerInterface $manager):Response{
 
-        $newOwner = $repository->find($userId);
+        $newRole = $repository->find($userId);
         $currentUser = $repository->find($this->getUser()->getProfile()->getRelatedTo());
-        if ($newOwner == $currentUser){
-            return $this->json("Vous ne pouvez pas faire cette action sur vous même",200);
+        if ($newRole == $currentUser) {
+            return $this->json("Vous ne pouvez pas faire cette action sur vous même", 200);
         }
-        if ($currentUser == $channel->getOwner()->getRelatedTo()){
-            foreach ($channel->getChannelMembers() as $member){
-                if ($member === $newOwner->getProfile()){
-                    $channel->setOwner($newOwner->getProfile());
+        if ($currentUser == $channel->getOwner()->getRelatedTo()) {
+            foreach ($channel->getChannelMembers() as $member) {
+
+                if ($member === $newRole->getProfile()) {
+                    if ($request->get("_route") == "promoteAdmin"){
+
+                    }
+
+
+                    $channel->setOwner($newRole->getProfile());
                     $manager->persist($channel);
                     $manager->flush();
-                    return $this->json($newOwner->getUsername()." a été promu propriétaire du channel",200);
-                }else{
-                    return $this->json("Cet utilisateur ne fait pas parti de ce channel",200);
+                    return $this->json($newRole->getUsername() . " a été promu propriétaire du channel", 200);
+                } else {
+                    return $this->json("Cet utilisateur ne fait pas parti de ce channel", 200);
                 }
             }
         }
 
-        return $this->json("Vous ne pouvez pas faire ça",200);
+        return $this->json("Vous ne pouvez pas faire ça", 200);
     }
-
+    */
 
 }
