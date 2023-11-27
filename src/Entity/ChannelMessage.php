@@ -10,18 +10,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ChannelMessageRepository::class)]
 class ChannelMessage
 {
-    #[Groups(["forChannel"])]
+    #[Groups(["forChannel","forChannelMessages"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forChannel"])]
+    #[Groups(["forChannel","forChannelMessages"])]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $author = null;
 
-    #[Groups(["forChannel"])]
+    #[Groups(["forChannel","forChannelMessages"])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
@@ -32,6 +32,10 @@ class ChannelMessage
     #[Groups(["forChannel"])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
+
+    public function __construct(){
+        $this->date = new \DateTime();
+    }
 
     public function getId(): ?int
     {
