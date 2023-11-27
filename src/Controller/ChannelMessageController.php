@@ -31,4 +31,14 @@ class ChannelMessageController extends AbstractController
 
 
 
+    #[Route('/index/{id}',methods: "GET")]
+    public function showAllMessagesFromChannel(Channel $channel):Response{
+
+        $messages = $channel->getChannelMessages();
+
+        return $this->json($messages,200,[],["groups"=>"forChannelMessages"]);
+    }
+
+
+
 }
