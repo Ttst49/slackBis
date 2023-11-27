@@ -40,5 +40,19 @@ class ChannelMessageController extends AbstractController
     }
 
 
+    #[Route('/create/{id}',methods: "POST")]
+    public function createChannelMessage(Channel $channel, SerializerInterface $serializer, EntityManagerInterface $manager,Request $request):Response{
 
+        foreach ($channel->getChannelMembers() as $member){
+            if ($this->getUser()->getProfile() === $member){
+                $newMessage = $serializer->deserialize($request->getContent(),ChannelMessage::class, "json");
+                $newMessage->setAuthor($this->getUser()->getProfile());
+                $newMessage->setAssociatedToChannel($channel);
+                $manager->persist($newMessage);
+                $manager->flush();
+                return $this->json($newMessage,201,[],["groups"=>"forChannelMessages"]);
+            }
+        }
+        return $this->json("Vous ne semblez pas membre de ce channel",200);
+    }
 }
