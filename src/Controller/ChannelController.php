@@ -79,15 +79,15 @@ class ChannelController extends AbstractController
 
         $channelMembers = $channel->getChannelMembers();
         foreach ($channelMembers as $member){
-            if ($member != $this->getUser()->getProfile()){
-                $channel->addChannelMember($this->getUser()->getProfile());
-                $manager->persist($channel);
-                $manager->flush();
-                return $this->json("Vous avez bien été ajouté au channel ".$channel->getName());
+            if ($member == $this->getUser()->getProfile()){
+                return $this->json("Vous faites visiblement déjà parti de ce channel",200);
+
             }
         }
-
-        return $this->json("Vous faites visiblement déjà parti de ce channel",200);
+        $channel->addChannelMember($this->getUser()->getProfile());
+        $manager->persist($channel);
+        $manager->flush();
+        return $this->json("Vous avez bien été ajouté au channel ".$channel->getName());
     }
 
 
