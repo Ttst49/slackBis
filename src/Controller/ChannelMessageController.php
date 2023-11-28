@@ -69,4 +69,18 @@ class ChannelMessageController extends AbstractController
 
         return $this->json("Vous ne semlbez pas être l'auteur de ce message",200);
     }
+
+
+
+    #[Route('/edit/{id}',methods: "PUT")]
+    public function editChannelMessage(Request $request,SerializerInterface $serializer, ChannelMessage $channelMessage,EntityManagerInterface $manager):Response{
+
+        if ($channelMessage->getAuthor() == $this->getUser()->getProfile()){
+            $editedMessage = $serializer->deserialize($request->getContent(), ChannelMessage::class,'json',array("object_to_populate"=>$channelMessage));
+            $manager->persist($editedMessage);
+            $manager->flush();
+            return $this->json($editedMessage,200,[],["groups"=>"forChannelMessages"]);
+        }
+        return $this->json("Vous ne pouvez pas modifier un message dont vous n'êtes pas l'auteur",200);
+    }
 }
