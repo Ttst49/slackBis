@@ -55,4 +55,18 @@ class ChannelMessageController extends AbstractController
         }
         return $this->json("Vous ne semblez pas membre de ce channel",200);
     }
+
+
+
+    #[Route('/delete/{id}')]
+    public function deleteChannelMessage(ChannelMessage $channelMessage, EntityManagerInterface $manager):Response{
+
+        if ($channelMessage->getAuthor() == $this->getUser()->getProfile()){
+            $manager->remove($channelMessage);
+            $manager->flush();
+            return $this->json("Le message a bien été supprimé du channel",200);
+        }
+
+        return $this->json("Vous ne semlbez pas être l'auteur de ce message",200);
+    }
 }
