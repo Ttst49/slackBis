@@ -58,7 +58,7 @@ class ChannelMessageController extends AbstractController
 
 
 
-    #[Route('/delete/{id}')]
+    #[Route('/delete/{id}',methods: "DELETE")]
     public function deleteChannelMessage(ChannelMessage $channelMessage, EntityManagerInterface $manager):Response{
 
         if ($channelMessage->getAuthor() == $this->getUser()->getProfile()){
