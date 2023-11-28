@@ -164,4 +164,26 @@ class ChannelController extends AbstractController
     }
     */
 
+
+    #[Route('/demote/admin/{id}/{userId}',methods: "POST")]
+    public function demoteAdmin(Channel $channel, $userId, UserRepository $repository, EntityManagerInterface $manager):Response{
+
+        $concernedUser = $repository->find($userId);
+        $collectionOfChannelAdmins = new ArrayCollection();
+        foreach ($channel->getAdminChannelMembers() as $channelAdmins){
+            $collectionOfChannelAdmins->add($channelAdmins);
+        }
+        if ($channel->getOwner() == $this->getUser()->getProfile()){
+            if ($collectionOfChannelAdmins->contains($concernedUser)){
+                $channel->removeAdminChannelMember($concernedUser);
+                $manager->persist($channel);
+                $manager->flush();
+                return $this->json("L'utilisateur ".$concernedUser->getUsername()." n'est plus administrateur sur le channel d'id ".$channel->getId(),200);
+            }
+        }
+
+
+        return $this->json("L'utilisateur ".$concernedUser->getUsername()."n'est pas administrateur sur le channel d'id ".$channel->getId(),200);
+    }
+
 }

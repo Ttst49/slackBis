@@ -33,5 +33,3 @@ class RelationsController extends AbstractController
 }
 
 
-# limiter le nombres de messages qu'on voit avec le bundle de pagination ou à la main dans le repo
-# bien changer les noms pour qu'ils ressemlbent aux entités
