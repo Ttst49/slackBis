@@ -129,41 +129,6 @@ class ChannelController extends AbstractController
         return $this->json("Vous ne pouvez pas quitter un channel dont vous ne faites pas parti", 200);
     }
 
-/*
-    #[Route('/promote/admin/{id}/{userId}',name: "promoteAdmin")]
-    #[Route('/promote/owner/{id}/{userId}',name: "promoteOwner")]
-    public function promoteToOwner(Channel $channel, $userId, UserRepository $repository, EntityManagerInterface $manager, Request $request): Response
-    {
-
-
-        $newRole = $repository->find($userId);
-        $currentUser = $repository->find($this->getUser()->getProfile()->getRelatedTo());
-        if ($newRole == $currentUser) {
-            return $this->json("Vous ne pouvez pas faire cette action sur vous même", 200);
-        }
-        if ($currentUser == $channel->getOwner()->getRelatedTo()) {
-            foreach ($channel->getChannelMembers() as $member) {
-
-                if ($member === $newRole->getProfile()) {
-                    if ($request->get("_route") == "promoteAdmin"){
-
-                    }
-
-
-                    $channel->setOwner($newRole->getProfile());
-                    $manager->persist($channel);
-                    $manager->flush();
-                    return $this->json($newRole->getUsername() . " a été promu propriétaire du channel", 200);
-                } else {
-                    return $this->json("Cet utilisateur ne fait pas parti de ce channel", 200);
-                }
-            }
-        }
-
-        return $this->json("Vous ne pouvez pas faire ça", 200);
-    }
-    */
-
 
     #[Route('/promote/owner/{id}/{userId}', name: "promoteOwner", methods: "POST")]
     #[Route('/promote/admin/{id}/{userId}', name: "promoteAdmin", methods: "POST")]
@@ -211,7 +176,7 @@ class ChannelController extends AbstractController
         }
 
 
-        return $this->json("Cette action n'est pas faisable",200);
+        return $this->json("Vous ne semblez pas pouvoir faire ça",200);
     }
 
 }
