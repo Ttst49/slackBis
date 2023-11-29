@@ -165,25 +165,53 @@ class ChannelController extends AbstractController
     */
 
 
-    #[Route('/demote/admin/{id}/{userId}',methods: "POST")]
-    public function demoteAdmin(Channel $channel, $userId, UserRepository $repository, EntityManagerInterface $manager):Response{
+    #[Route('/promote/owner/{id}/{userId}', name: "promoteOwner", methods: "POST")]
+    #[Route('/promote/admin/{id}/{userId}', name: "promoteAdmin", methods: "POST")]
+    #[Route('/demote/admin/{id}/{userId}', name: "demoteAdmin", methods: "POST")]
+    public function demoteAdmin(Channel $channel, $userId, UserRepository $repository, EntityManagerInterface $manager, Request $request):Response{
 
         $concernedUser = $repository->find($userId);
         $collectionOfChannelAdmins = new ArrayCollection();
         foreach ($channel->getAdminChannelMembers() as $channelAdmins){
             $collectionOfChannelAdmins->add($channelAdmins);
         }
+        $collectionOfChannelMembers = new ArrayCollection();
+        foreach ($channel->getChannelMembers() as $channelMember){
+            $collectionOfChannelMembers->add($channelMember);
+        }
+
         if ($channel->getOwner() == $this->getUser()->getProfile()){
-            if ($collectionOfChannelAdmins->contains($concernedUser)){
-                $channel->removeAdminChannelMember($concernedUser);
-                $manager->persist($channel);
-                $manager->flush();
-                return $this->json("L'utilisateur ".$concernedUser->getUsername()." n'est plus administrateur sur le channel d'id ".$channel->getId(),200);
+
+            $route = $request->get('_route');
+            switch ($route) {
+                case $route == "promoteOwner":
+                    $channel->setOwner($concernedUser->getProfile());
+                    $manager->persist($channel);
+                    $manager->flush();
+                    return $this->json("L'utilisateur " . $concernedUser->getUsername() . " est désormais propriétaire sur le channel d'id " . $channel->getId(), 200);
+
+                case $route == "promoteAdmin":
+                    if ($collectionOfChannelMembers->contains($concernedUser->getProfile())) {
+                        $channel->addAdminChannelMember($concernedUser);
+                        $manager->persist($channel);
+                        $manager->flush();
+                        return $this->json("L'utilisateur " . $concernedUser->getUsername() . " est désormais administrateur sur le channel d'id " . $channel->getId(), 200);
+                    }
+
+                case $route == 'demoteAdmin':
+                    if ($collectionOfChannelAdmins->contains($concernedUser)) {
+                        $channel->removeAdminChannelMember($concernedUser);
+                        $manager->persist($channel);
+                        $manager->flush();
+                        return $this->json("L'utilisateur " . $concernedUser->getUsername() . " n'est plus administrateur sur le channel d'id " . $channel->getId(), 200);
+                    }
             }
+
+
         }
 
 
-        return $this->json("L'utilisateur ".$concernedUser->getUsername()."n'est pas administrateur sur le channel d'id ".$channel->getId(),200);
+        return $this->json("Cette action n'est pas faisable",200);
     }
 
 }
