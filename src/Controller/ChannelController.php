@@ -174,9 +174,13 @@ class ChannelController extends AbstractController
 
 
         }
+        $response =[
+            "status"=>"200",
+            "content"=>"Vous ne semblez pas pouvoir faire ça"
+        ];
 
 
-        return $this->json("Vous ne semblez pas pouvoir faire ça",200);
+        return $this->json($response,200);
     }
 
 }

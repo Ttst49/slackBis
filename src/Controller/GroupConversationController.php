@@ -193,7 +193,24 @@ class GroupConversationController extends AbstractController
         return $this->json("Une erreur est survenue, n'y aurait-il pas une erreur dans la requete?",200);
     }
 
-/** a faire
+
+
+    #[Route("/showAll",methods: "GET")]
+    public function showConversations(GroupConversationRepository $repository):Response{
+
+        $allConversations = [];
+        foreach ($repository->findAll() as $groupConversation){
+            foreach ($groupConversation->getGroupMembers() as $groupMember){
+                if ($groupMember == $this->getUser()->getProfile()){
+                    $allConversations[] = $groupConversation;
+                }
+            }
+        }
+        return $this->json($allConversations,200,[],["groups"=>"forGroupShowing"]);
+    }
+
+
+
     #[Route('/kick/{id}/{userId}')]
     public function kickMember(GroupConversation $groupConversation, $userId, ProfileRepository $repository, EntityManagerInterface $manager):Response{
 
@@ -241,21 +258,7 @@ class GroupConversationController extends AbstractController
 
         return $this->json("Quelque chose s'est mal passé",200);
     }
-**/
 
-    #[Route("/showAll",methods: "GET")]
-    public function showConversations(GroupConversationRepository $repository):Response{
-
-        $allConversations = [];
-        foreach ($repository->findAll() as $groupConversation){
-            foreach ($groupConversation->getGroupMembers() as $groupMember){
-                if ($groupMember == $this->getUser()->getProfile()){
-                    $allConversations[] = $groupConversation;
-                }
-            }
-        }
-        return $this->json($allConversations,200,[],["groups"=>"forGroupShowing"]);
-    }
 
 
 }
