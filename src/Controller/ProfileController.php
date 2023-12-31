@@ -32,4 +32,11 @@ class ProfileController extends AbstractController
         }
         return $this->json($users,200,[],["groups"=>"forIndexingProfile"]);
     }
+
+    #[Route('profile/getActual',methods: "GET")]
+    public function getActualUserProfile():Response{
+        $user = $this->getUser();
+
+        return $this->json($user,200,[],["groups"=>"forIndexingProfile"]);
+    }
 }
