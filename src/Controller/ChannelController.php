@@ -20,7 +20,7 @@ class ChannelController extends AbstractController
     public function showChannel(Channel $channel): Response
     {
 
-        return $this->json($channel, 200, [], ["groups" => "forChannel"]);
+        return $this->json($channel, 200);
     }
 
 
@@ -28,7 +28,7 @@ class ChannelController extends AbstractController
     public function indexChannels(ChannelRepository $repository): Response
     {
 
-        return $this->json($repository->findAll(), 200);
+        return $this->json($repository->findAll(), 200,[],["groups"=>"forChannel"]);
     }
 
 
