@@ -57,6 +57,7 @@ class ChannelController extends AbstractController
         }
 
         $manager->remove($channel);
+        $manager->flush();
 
         return $this->json("Le channel a bien été supprimé", 200);
     }
@@ -184,16 +185,5 @@ class ChannelController extends AbstractController
     }
 
 
-    #[Route('/checkActualUser/{id}')]
-    public function checkIfActualUserIsMember(Channel $channel):Response{
-
-        foreach ($channel->getChannelMembers() as $member){
-            if ($this->getUser()->getProfile() == $member){
-                return $this->json(true,200);
-            }
-        }
-
-        return $this->json(false,200);
-    }
 
 }
