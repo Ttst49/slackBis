@@ -183,4 +183,17 @@ class ChannelController extends AbstractController
         return $this->json($response,200);
     }
 
+
+    #[Route('/checkActualUser/{id}')]
+    public function checkIfActualUserIsMember(Channel $channel):Response{
+
+        foreach ($channel->getChannelMembers() as $member){
+            if ($this->getUser()->getProfile() == $member){
+                return $this->json(true,200);
+            }
+        }
+
+        return $this->json(false,200);
+    }
+
 }
