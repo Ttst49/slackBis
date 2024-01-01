@@ -52,6 +52,7 @@ class Profile
         "forGroupCreation",
         "forGroupIndexing",
         "forChannelMessages",
+        "forChannel"
         ])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
