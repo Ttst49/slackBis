@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\Request;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,19 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route("api/request")]
 class RequestController extends AbstractController
 {
+
+
+    #[Route('/all',methods: "GET")]
+    public function getAllRequest(UserRepository $repository):Response{
+
+        $actualUser = $repository->find($this->getUser()->getId());
+
+        $requests = $actualUser->getProfile()->getRequests();
+
+        return $this->json($requests,200);
+    }
+
+
     #[Route('/send/{id}', methods: "POST")]
     public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager): Response
     {

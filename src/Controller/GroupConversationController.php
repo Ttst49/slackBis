@@ -206,7 +206,7 @@ class GroupConversationController extends AbstractController
                 }
             }
         }
-        return $this->json($allConversations,200,[],["groups"=>"forGroupShowing"]);
+        return $this->json($allConversations,200,[],["groups"=>"forGroupCreation"]);
     }
 
 

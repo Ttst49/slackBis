@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: GroupConversationRepository::class)]
 class GroupConversation
 {
-    #[Groups(["forGroupIndexing","forGroupShowing"])]
+    #[Groups(["forGroupCreation","forGroupIndexing","forGroupShowing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
