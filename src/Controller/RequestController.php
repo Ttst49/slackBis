@@ -23,7 +23,7 @@ class RequestController extends AbstractController
 
         $requests = $actualUser->getProfile()->getRequests();
 
-        return $this->json($requests,200);
+        return $this->json($requests,200,[],["groups"=>"forRequest"]);
     }
 
 
