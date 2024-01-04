@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,14 +20,19 @@ class RelationsController extends AbstractController
         return $this->json($friends,200,[],["groups"=>"forIndexingProfile"]);
     }
 
-#[Route('/remove/{id}',methods: "DELETE")]
-    public function removeFriend(Relation $relation,EntityManagerInterface $manager):Response{
 
-        if ($this->getUser() == $relation->getUserA()->getRelatedTo() or $this->getUser() == $relation->getUserB()->getRelatedTo()){
-            $manager->remove($relation);
-            $manager->flush();
-            return $this->json("L'amitié a été supprimé",200);
+
+#[Route('/remove/{id}',methods: "DELETE")]
+    public function removeFriend(Profile $profile,EntityManagerInterface $manager):Response{
+
+        foreach ($profile->getRelations() as $relation){
+            if ($this->getUser() == $relation->getUserA()->getRelatedTo() or $this->getUser() == $relation->getUserB()->getRelatedTo()){
+                $manager->remove($relation);
+                $manager->flush();
+                return $this->json("L'amitié a été supprimé",200);
+            }
         }
+
 
         return $this->json("Rien n'a été trouvé à supprimer",200);
     }
