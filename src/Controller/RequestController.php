@@ -29,13 +29,6 @@ class RequestController extends AbstractController
         return $this->json($requests,200,[],["groups"=>"forRequest"]);
     }
 
-    #[Route('/getAll/{id}',methods: "GET")]
-    public function getAllRequestFromUser(User $user):Response{
-
-        $requests = $user->getProfile()->getRequests();
-        return $this->json($requests,200,[],["groups"=>"forRequest"]);
-    }
-
 
     #[Route('/send/{id}', methods: "POST")]
     public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager, ProfileRepository $repository): Response

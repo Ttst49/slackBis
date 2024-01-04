@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Profile;
 use App\Entity\Relation;
+use App\Entity\User;
 use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function Symfony\Component\String\u;
 
 #[Route('api/relations')]
 class RelationsController extends AbstractController
@@ -18,6 +20,15 @@ class RelationsController extends AbstractController
         $friends = $service->getFriends();
 
         return $this->json($friends,200,[],["groups"=>"forIndexingProfile"]);
+    }
+
+
+    #[Route('/getRelations/{id}',methods: "GET")]
+    public function getRelationsFromUser(User $user):Response{
+
+        $relations = $user->getProfile()->getRelations();
+
+        return $this->json($relations,200,[],["groups"=>"forRelationIndexing"]);
     }
 
 

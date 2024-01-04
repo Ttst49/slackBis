@@ -14,13 +14,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing","forChannel","forChannelMessages"])]
+    #[Groups(['forIndexingProfile',"forPrivateConversation","forGroupCreation","forGroupIndexing","forChannel","forChannelMessages","forRelationIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forIndexingProfile","forRequest","forPrivateConversation","forGroupCreation","forGroupIndexing","forChannel","forChannelMessages"])]
+    #[Groups(["forIndexingProfile","forRequest","forPrivateConversation","forGroupCreation","forGroupIndexing","forChannel","forChannelMessages","forRelationIndexing"])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 

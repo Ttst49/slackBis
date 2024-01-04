@@ -9,19 +9,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RelationRepository::class)]
 class Relation
 {
-    #[Groups('forIndexingProfile')]
+    #[Groups(['forIndexingProfile',"forRelationIndexing"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups('forIndexingProfile')]
+    #[Groups(['forIndexingProfile',"forRelationIndexing"])]
 
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'relations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $userA = null;
 
-    #[Groups('forIndexingProfile')]
+    #[Groups(['forIndexingProfile',"forRelationIndexing"])]
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'relations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $userB = null;

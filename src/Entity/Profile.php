@@ -20,6 +20,7 @@ class Profile
         "forShowingPrivateMessage",
         "forChannel",
         "forChannelMessages",
+        "forRelationIndexing"
 
         ])]
     #[ORM\Id]
@@ -52,7 +53,8 @@ class Profile
         "forGroupCreation",
         "forGroupIndexing",
         "forChannelMessages",
-        "forChannel"
+        "forChannel",
+        "forRelationIndexing"
         ])]
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $relatedTo = null;
@@ -65,7 +67,7 @@ class Profile
     #[ORM\Column]
     private ?bool $visibility = null;
 
-    #[Groups('forIndexingProfile')]
+    //#[Groups('forIndexingProfile')]
     #[ORM\OneToMany(mappedBy: 'userA', targetEntity: Relation::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $relations;
 
