@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\Request;
+use App\Entity\User;
 use App\Repository\ProfileRepository;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function Sodium\add;
 
 #[Route("api/request")]
 class RequestController extends AbstractController
@@ -26,6 +26,13 @@ class RequestController extends AbstractController
 
         $requests = $actualUser->getProfile()->getRequests();
 
+        return $this->json($requests,200,[],["groups"=>"forRequest"]);
+    }
+
+    #[Route('/getAll/{id}',methods: "GET")]
+    public function getAllRequestFromUser(User $user):Response{
+
+        $requests = $user->getProfile()->getRequests();
         return $this->json($requests,200,[],["groups"=>"forRequest"]);
     }
 

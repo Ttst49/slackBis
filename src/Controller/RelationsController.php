@@ -23,15 +23,13 @@ class RelationsController extends AbstractController
 
 
 #[Route('/remove/{id}',methods: "DELETE")]
-    public function removeFriend(Profile $profile,EntityManagerInterface $manager):Response{
+    public function removeFriend(Relation $relation,EntityManagerInterface $manager):Response{
 
-        foreach ($profile->getRelations() as $relation){
             if ($this->getUser() == $relation->getUserA()->getRelatedTo() or $this->getUser() == $relation->getUserB()->getRelatedTo()){
                 $manager->remove($relation);
                 $manager->flush();
                 return $this->json("L'amitié a été supprimé",200);
             }
-        }
 
 
         return $this->json("Rien n'a été trouvé à supprimer",200);

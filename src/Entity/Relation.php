@@ -15,12 +15,13 @@ class Relation
     #[ORM\Column]
     private ?int $id = null;
 
-    //#[Groups('forIndexingProfile')]
+    #[Groups('forIndexingProfile')]
+
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'relations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $userA = null;
 
-    //#[Groups('forIndexingProfile')]
+    #[Groups('forIndexingProfile')]
     #[ORM\ManyToOne(cascade: ["persist"], inversedBy: 'relations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $userB = null;

@@ -27,7 +27,7 @@ class Profile
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Groups(["forIndexingProfile",
+    #[Groups([
         "forRequest",
         "forPrivateConversation",
         "forChannel",
@@ -37,7 +37,7 @@ class Profile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[Groups(["forIndexingProfile",
+    #[Groups([
         "forRequest",
         "forPrivateConversation",
         "forChannel",
