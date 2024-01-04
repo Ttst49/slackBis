@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\Request;
+use App\Repository\ProfileRepository;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function Sodium\add;
 
 #[Route("api/request")]
 class RequestController extends AbstractController
@@ -28,30 +31,39 @@ class RequestController extends AbstractController
 
 
     #[Route('/send/{id}', methods: "POST")]
-    public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager): Response
+    public function sendFriendRequest(Profile $profile, EntityManagerInterface $manager, ProfileRepository $repository): Response
     {
+        $actualProfile = $repository->find($this->getUser()->getProfile()->getid());
         $request = new Request();
         $request->setSender($this->getUser()->getProfile());
-
         $request->setRecipient($profile);
         $recipent = $request->getRecipient();
         $sender = $request->getSender();
-        if ($recipent === $sender){
+        if ($recipent === $sender) {
             return $this->json("Vous ne pouvez pas envoyer une demande d'ami à vous même");
-        }elseif($recipent->getRelations() != null and $sender->getRelations()!= null) {
-            foreach ($recipent->getRelations() as $relation){
-                foreach ($sender->getRelations() as $relation2){
-                    if ($relation == $relation2){
-                        return $this->json("Vous avez déjà cet ami",200);
-                    }else{
+        } elseif ($recipent->getRelations() != null and $sender->getRelations() != null) {
+            foreach ($recipent->getRelations() as $relation) {
+                foreach ($sender->getRelations() as $relation2) {
+                    if ($relation == $relation2) {
+                        return $this->json("Vous avez déjà cet ami", 200);
+                    } else {
                         $manager->persist($request);
                         $manager->flush();
-                        return $this->json("Votre requête a bien été envoyé",200);
+                        return $this->json("Votre requête a bien été envoyé", 200);
                     }
                 }
             }
         }
-        #faire en sorte de ne pas pouvoir envoyer 2 demandes à la même personne
+
+        if ($recipent->getRequests()) {
+            foreach ($recipent->getRequests() as $request) {
+                if ($request->getSender()->getRelatedTo()->getUsername() == $sender->getRelatedTo()->getUsername()){
+                    return $this->json("Vous ne pouvez envoyer 2 requêtes à la même personne",200);
+
+                }
+            }
+        }
+
         $manager->persist($request);
         $manager->flush();
         return $this->json("Votre requête a bien été envoyé à ".$request->getRecipient()->getRelatedTo()->getUsername(),200);

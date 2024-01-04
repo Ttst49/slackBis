@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request
 {
-    #[Groups('forIndexingProfile')]
+    #[Groups(['forIndexingProfile',"forRequest"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
