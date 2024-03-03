@@ -70,7 +70,7 @@ class GroupConversationController extends AbstractController
 
 
     #[Route('/demote/admin/{id}/{userId}',methods: "GET")]
-    #[Route('/promote/admin/{id}/{userId},',methods: "GET")]
+    #[Route('/promote/admin/{id}/{userId}',methods: "GET")]
     public function promoteAdmin(GroupConversation $groupConversation, $userId, ProfileRepository $repository,EntityManagerInterface $manager,Request $request):Response{
 
         $adminsCounter = $groupConversation->getAdminMembers()->count();

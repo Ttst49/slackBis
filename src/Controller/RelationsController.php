@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Profile;
 use App\Entity\Relation;
 use App\Entity\User;
 use App\Service\FriendsService;
@@ -10,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function Symfony\Component\String\u;
 
 #[Route('api/relations')]
 class RelationsController extends AbstractController
@@ -36,14 +34,14 @@ class RelationsController extends AbstractController
 #[Route('/remove/{id}',methods: "DELETE")]
     public function removeFriend(Relation $relation,EntityManagerInterface $manager):Response{
 
-            if ($this->getUser() == $relation->getUserA()->getRelatedTo() or $this->getUser() == $relation->getUserB()->getRelatedTo()){
+            if ($this->getUser() === $relation->getUserA()->getRelatedTo() or $this->getUser() === $relation->getUserB()->getRelatedTo()){
                 $manager->remove($relation);
                 $manager->flush();
-                return $this->json("L'amitié a été supprimé",200);
+                return $this->json("L'amitié a été supprimée");
             }
 
 
-        return $this->json("Rien n'a été trouvé à supprimer",200);
+        return $this->json("Rien n'a été trouvé à supprimer");
     }
 }
 
