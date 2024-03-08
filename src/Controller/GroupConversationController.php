@@ -51,7 +51,7 @@ class GroupConversationController extends AbstractController
                 }
             }
 
-                if ($groupConversation->getGroupMembers() == new ArrayCollection()){
+                if ($groupConversation->getGroupMembers() === new ArrayCollection()){
                     return $this->json("Vous devez associer des amis pour créer un groupe",200);
                 }
                 $groupConversation->setOwner($this->getUser()->getProfile());
