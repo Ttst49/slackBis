@@ -1,232 +1,342 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Documentation API{% endblock %}
-
-{% block body %}
-
-<html class="no-js" lang="en">
+<!doctype html>
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>API - Documentation</title>
-    <meta name="description" content="">
-    <meta name="author" content="ticlekiwi">
-
-    <meta http-equiv="cleartype" content="on">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300&family=Source+Code+Pro:wght@300&display=swap" rel="stylesheet">
-    <script>hljs.initHighlightingOnLoad();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>API DOC</title>
 </head>
+<style>
+    .uppercase{
+        text-transform: uppercase;
+    }
 
+    body{
+        font-family: Urbanist, Roboto, sans-serif;
+        background-color: white;
+        color: black;
+    }
+
+    .blocOfCode{
+        display: flex;
+        flex-direction: column;
+        margin: 10px;
+    }
+
+    .jsonBody{
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1e1e1e;
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    .code{
+        background-color: #252525;
+        padding: 30px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .codeTitle{
+        background-color: white;
+        color: black;
+        width: fit-content;
+        max-width: 25%;
+        border-radius: 15px;
+        padding: 10px;
+        text-transform: lowercase;
+    }
+
+    code{
+        width: fit-content;
+        padding: 5px;
+        background-color: slategrey;
+    }
+
+    .button{
+        padding: 10px;
+        width: fit-content;
+        border-radius: 25px;
+        text-transform: uppercase;
+        color: black;
+    }
+
+    .example{
+        background-color: aquamarine;
+    }
+
+    .get{
+        background-color: darkgreen;
+    }
+
+    .post{
+        background-color: #b7910d;
+    }
+
+    .put{
+        background-color: dodgerblue;
+    }
+
+    .delete{
+        background-color: indianred;
+    }
+
+    .log{
+        padding: 10px;
+        width: fit-content;
+        border-radius: 25px;
+        background-color: coral;
+    }
+</style>
 <body>
-<div class="left-menu">
-    <div class="content-logo">
-        <div class="logo">
-            <img alt="api documentation icon Obsidian" title="platform by Emily van den Heever from the Noun Project" src="{{ asset('images/obsidian-icon-655e02bda74ac090425233.jpg') }}" height="32" />
-            <span>API Documentation</span>
-        </div>
-        <button class="burger-menu-icon" id="button-menu-mobile">
-            <svg width="34" height="34" viewBox="0 0 100 100"><path class="line line1" d="M 20,29.000046 H 80.000231 C 80.000231,29.000046 94.498839,28.817352 94.532987,66.711331 94.543142,77.980673 90.966081,81.670246 85.259173,81.668997 79.552261,81.667751 75.000211,74.999942 75.000211,74.999942 L 25.000021,25.000058"></path><path class="line line2" d="M 20,50 H 80"></path><path class="line line3" d="M 20,70.999954 H 80.000231 C 80.000231,70.999954 94.498839,71.182648 94.532987,33.288669 94.543142,22.019327 90.966081,18.329754 85.259173,18.331003 79.552261,18.332249 75.000211,25.000058 75.000211,25.000058 L 25.000021,74.999942"></path></svg>
-        </button>
-    </div>
-    <div class="mobile-menu-closer"></div>
-    <div class="content-menu">
-        <div class="content-infos">
-            <div class="info"><b>Version:</b> 1.0.0</div>
-            <div class="info"><b>Last Updated:</b> 29th Nov, 2023</div>
-        </div>
-        <ul>
-            <li class="scroll-to-link active" data-target="content-get-started">
-                <a>GET STARTED</a>
-            </li>
-            <li class="scroll-to-link" data-target="content-get-user-management">
-                <a>User Management</a>
-            </li>
-            <li class="scroll-to-link" data-target="content-get-private-conversation">
-                <a>Private conversation</a>
-            </li>
-            <li class="scroll-to-link" data-target="content-get-group-conversation">
-                <a>Group conversation</a>
-            </li>
-            <li class="scroll-to-link" data-target="content-get-channel">
-                <a>Channel</a>
-            </li>
-            <li class="scroll-to-link" data-target="content-errors">
-                <a>Errors</a>
-            </li>
-        </ul>
-    </div>
-</div>
-<div class="content-page">
-    <div class="content-code"></div>
+<div class="container">
     <div class="content">
-        <div class="overflow-hidden content-section" id="content-get-started">
-            <h1>Get started</h1>
-            <pre>
-    API Endpoint
+        <h4>default path:</h4> <pre style="">slackbis.thibautstachnick.com/api</pre>
 
-        https://slackbis.thibautstachnick.com/api
-                </pre>
-            <p>
-                The slackbis API provide an alternative to slack where private conversation, private groups and channels are available with an admin system
-            </p>
-            <p>
-                To use this API you need to register first and to get a token at <a href="{{ path('app_registration_registerapi') }}">this address</a> with POST
-            </p>
+        <h3>Example</h3>
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Describe what the url does</p>
+                <code>link to the url</code>
+                <div class="button example">method</div>
+                <div class="log">Condition (show only if required)</div>
+            </div>
+            <div class="jsonBody"><span>Example if json needed</span><span>{ <br> "json":true,<br> "api":"easy"<br> }</span></div>
         </div>
-        <div class="overflow-hidden content-section" id="content-get-characters">
-            <h2>Private Conversation</h2>
-            <pre><code class="bash">
-# Here is a curl example
-curl --location 'http://localhost:8000/api/channel/show/3' \
-     --header 'Authorization: Bearer {bearer Token from login}'
-                </code></pre>
-            <p>
-                To get characters you need to make a POST call to the following url :<br>
-                <code class="higlighted break-word">http://api.westeros.com/character/get</code>
-            </p>
-            <br>
-            <pre><code class="json">
-Result example :
 
-{
-  {
-    "id": 3,
-    "name": "Je suis un nom bien modifié deux fois",
-    "channelMessages": [],
-    "channelMembers": [
-        {
-            "id": 9,
-            "name": null,
-            "lastName": null
-        },
-        {
-            "id": 10,
-            "name": null,
-            "lastName": null
-        },
-        {
-            "id": 11,
-            "name": null,
-            "lastName": null
-        }
-    ],
-    "adminChannelMembers": [],
-    "owner": {
-        "id": 9,
-        "name": null,
-        "lastName": null
-    },
-    "createdAt": "2023-11-22T15:23:53+01:00"
-}
-  ]
-}
-                </code></pre>
-            <h4>QUERY PARAMETERS</h4>
-            <table class="central-overflow-x">
-                <thead>
-                <tr>
-                    <th>Field</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>secret_key</td>
-                    <td>String</td>
-                    <td>Your API key.</td>
-                </tr>
-                <tr>
-                    <td>search</td>
-                    <td>String</td>
-                    <td>(optional) A search word to find character by name.</td>
-                </tr>
-                <tr>
-                    <td>house</td>
-                    <td>String</td>
-                    <td>
-                        (optional) a string array of houses:
-                    </td>
-                </tr>
-                <tr>
-                    <td>alive</td>
-                    <td>Boolean</td>
-                    <td>
-                        (optional) a boolean to filter alived characters
-                    </td>
-                </tr>
-                <tr>
-                    <td>gender</td>
-                    <td>String</td>
-                    <td>
-                        (optional) a string to filter character by gender:<br>
-                        m: male<br>
-                        f: female
-                    </td>
-                </tr>
-                <tr>
-                    <td>offset</td>
-                    <td>Integer</td>
-                    <td>(optional - default: 0) A cursor for use in pagination. Pagination starts offset the specified offset.</td>
-                </tr>
-                <tr>
-                    <td>limit</td>
-                    <td>Integer</td>
-                    <td>(optional - default: 10) A limit on the number of objects to be returned, between 1 and 100.</td>
-                </tr>
-                </tbody>
-            </table>
+        <h2 class="uppercase">users</h2>
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Register as a new user of the application</p>
+                <code>/register</code>
+                <div class="button post">post</div>
+            </div>
+            <div class="jsonBody"><span>User registration</span><span>{ <br> "username":"{your Username}", <br> "password":"{your Password}" <br> }</span></div>
         </div>
-        <div class="overflow-hidden content-section" id="content-errors">
-            <h2>Errors</h2>
-            <p>
-                The Westeros API uses the following error codes:
-            </p>
-            <table>
-                <thead>
-                <tr>
-                    <th>Error Code</th>
-                    <th>Meaning</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>X000</td>
-                    <td>
-                        Some parameters are missing. This error appears when you don't pass every mandatory parameters.
-                    </td>
-                </tr>
-                <tr>
-                    <td>X001</td>
-                    <td>
-                        Unknown or unvalid <code class="higlighted">secret_key</code>. This error appears if you use an unknow API key or if your API key expired.
-                    </td>
-                </tr>
-                <tr>
-                    <td>X002</td>
-                    <td>
-                        Unvalid <code class="higlighted">secret_key</code> for this domain. This error appears if you use an  API key non specified for your domain. Developper or Universal API keys doesn't have domain checker.
-                    </td>
-                </tr>
-                <tr>
-                    <td>X003</td>
-                    <td>
-                        Unknown or unvalid user <code class="higlighted">token</code>. This error appears if you use an unknow user <code class="higlighted">token</code> or if the user <code class="higlighted">token</code> expired.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Login and get a token from the application</p>
+                <code>/login_check</code>
+                <div class="button post">post</div>
+            </div>
+            <div class="jsonBody"><span>User logging in</span><span>{ <br> "username":"{your Username}", <br> "password":"{your Password}" <br> }</span></div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">show all users from the application and their ids</p>
+                <code>profile/showAll</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">show a specific user by it id</p>
+                <code>/profile/show/{User Id}</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">show actual user</p>
+                <code>/profile/getActual</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+
+
+
+        <h2 class="uppercase">EVENTS</h2>
+        <h3 class="uppercase">public events</h3>
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Show all the public events</p>
+                <code>/public/event/index</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Attend to a public event with it ID</p>
+                <code>/public/event/attend/{EventId}</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Create a new public event</p>
+                <code>/public/event/create</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+            <div class="jsonBody"><span>Public event creation</span><span>{ <br> "place":"string",<br>
+    "description":"event description",<br>
+    "startOn": "date | format (d-m-Y)",<br>
+    "endOn":"date | format (d-m-Y)",<br>
+    "isPlacePrivate":true/false <br> }</span></div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Get all participants from a public event</p>
+                <code>/public/event/getParticipants/{EventId}</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <h3 class="uppercase">private event</h3>
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Show all the private events since you're participating</p>
+                <code>/private/event/index</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Show a unique private event since you're participating</p>
+                <code>/private/event/showEvent/{Event ID}</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Create a new private event</p>
+                <code>/private/event/create</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+            <div class="jsonBody"><span>Private event creation</span><span>{ <br> "place":"string",<br>
+    "description":"event description",<br>
+    "startOn": "date | format (d-m-Y)",<br>
+    "endOn":"date | format (d-m-Y)",<br>
+    "isPlacePrivate":true/false <br> }</span></div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Invite a user to a private event</p>
+                <code>/private/event/invite/{EventID}/{Invited User Id}</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Cancel or schedule again an existing event</p>
+                <code>/private/event/changeStatus/{EventID}</code>
+                <div class="button put">put</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Edit an existing private event</p>
+                <code>/private/event/edit/{eventID}</code>
+                <div class="button put">put</div>
+                <div class="log">loggedIn</div>
+            </div>
+            <div class="jsonBody"><span>Private event edition</span><span>{ <br> "place":"string",<br>
+        "description":"event description",<br>
+        "startOn": "date | format (d-m-Y)",<br>
+        "endOn":"date | format (d-m-Y)",<br>
+        "isPlacePrivate":true/false <br> }</span></div>
         </div>
     </div>
-    <div class="content-code"></div>
+
+    <h3 class="uppercase">contributions | linked to private event on private place only</h3>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">Show all contributions include suggestions and standalone supports</p>
+            <code>/private/event/showContributions/{Event ID}</code>
+            <div class="button get">get</div>
+            <div class="log">loggedIn</div>
+        </div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">Show all suggestions from the host of an event</p>
+            <code>/private/event/showSuggestions/{Event ID}</code>
+            <div class="button get">get</div>
+            <div class="log">loggedIn</div>
+        </div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">add a suggestion if you're the host of the event</p>
+            <code>/private/event/addSuggestion/{Event ID}</code>
+            <div class="button post">post</div>
+            <div class="log">loggedIn</div>
+        </div>
+        <div class="jsonBody"><span>Add a suggestion to private event</span><span>{<br> "title":"{your suggestion title}" <br>}</span></div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">Start supporting a suggestion to make it a support into the contributions</p>
+            <code>/private/event/supportSuggestion/{Suggestion ID}</code>
+            <div class="button put">put</div>
+            <div class="log">loggedIn</div>
+        </div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">Stop supporting a suggestion to remove it from the contributions and make it available again</p>
+            <code>/private/event/supportSuggestion/{Suggestion ID}</code>
+            <div class="button put">put</div>
+            <div class="log">loggedIn</div>
+        </div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">add a support not linked to a suggestion if you're participating to private event</p>
+            <code>/private/event/addSupport/{Event ID}</code>
+            <div class="button post">post</div>
+            <div class="log">loggedIn</div>
+        </div>
+        <div class="jsonBody"><span>Add a support to private event</span><span>{<br> "title":"{your support title}" <br>}</span></div>
+    </div>
+
+    <div class="blocOfCode">
+        <div class="code">
+            <p class="codeTitle">Delete a support if you're the creator of it or the private event host</p>
+            <code>/private/event/removeSupport/{Support ID}</code>
+            <div class="button delete">delete</div>
+            <div class="log">loggedIn</div>
+        </div>
+    </div>
+
+
 </div>
-<script src={{ asset('js/main.js') }}></script>
+
 </body>
 </html>
-{% endblock %}
