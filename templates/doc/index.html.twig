@@ -159,12 +159,11 @@
 
 
 
-        <h2 class="uppercase">EVENTS</h2>
-        <h3 class="uppercase">public events</h3>
+        <h2 class="uppercase">Channels</h2>
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Show all the public events</p>
-                <code>/public/event/index</code>
+                <p class="codeTitle">Show all the channels</p>
+                <code>/channel/showAll</code>
                 <div class="button get">get</div>
                 <div class="log">loggedIn</div>
             </div>
@@ -172,8 +171,8 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Attend to a public event with it ID</p>
-                <code>/public/event/attend/{EventId}</code>
+                <p class="codeTitle">Show specific channel with it ID</p>
+                <code>/channel/show/{ChannelId}</code>
                 <div class="button get">get</div>
                 <div class="log">loggedIn</div>
             </div>
@@ -181,26 +180,79 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Create a new public event</p>
-                <code>/public/event/create</code>
+                <p class="codeTitle">Create a channel</p>
+                <code>/channel/create</code>
                 <div class="button post">post</div>
                 <div class="log">loggedIn</div>
             </div>
-            <div class="jsonBody"><span>Public event creation</span><span>{ <br> "place":"string",<br>
-    "description":"event description",<br>
-    "startOn": "date | format (d-m-Y)",<br>
-    "endOn":"date | format (d-m-Y)",<br>
-    "isPlacePrivate":true/false <br> }</span></div>
+            <div class="jsonBody"><span>Channel creation</span><span>{ <br> "name":"string"<br>}</span></div>
         </div>
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Get all participants from a public event</p>
-                <code>/public/event/getParticipants/{EventId}</code>
-                <div class="button get">get</div>
+                <p class="codeTitle">Remove a channel</p>
+                <code>/channel/remove/{ChannelId}</code>
+                <div class="button delete">delete</div>
                 <div class="log">loggedIn</div>
             </div>
         </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Edit a channel</p>
+                <code>/channel/edit/{ChannelId}</code>
+                <div class="button put">put</div>
+                <div class="log">loggedIn</div>
+            </div>
+            <div class="jsonBody"><span>Channel edition</span><span>{ <br> "name":"string"<br>}</span></div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Join a channel</p>
+                <code>/channel/join/{ChannelId}</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Leave a channel</p>
+                <code>/channel/leave/{ChannelId}</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Promote a user as channel's owner</p>
+                <code>/channel/promote/owner/{UserId}/{ChannelId}</code>
+                <div class="button post">post</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         <h3 class="uppercase">private event</h3>
         <div class="blocOfCode">
