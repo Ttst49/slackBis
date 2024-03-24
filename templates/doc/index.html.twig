@@ -253,7 +253,7 @@
             </div>
         </div>
 
-        <h3 class="uppercase">Channel's messages</h3>
+        <h3 class="uppercase">Channel messages</h3>
         <div class="blocOfCode">
             <div class="code">
                 <p class="codeTitle">Show all the channel's messages from specific channel</p>
@@ -284,8 +284,8 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Remove a channel</p>
-                <code>/channel/remove/{ChannelId}</code>
+                <p class="codeTitle">Remove a channel message</p>
+                <code>/channel/message/remove/{ChannelMessageId}</code>
                 <div class="button delete">delete</div>
                 <div class="log">loggedIn</div>
             </div>
@@ -293,69 +293,13 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Edit a channel</p>
-                <code>/channel/edit/{ChannelId}</code>
+                <p class="codeTitle">Edit a channel message</p>
+                <code>/channel/message/edit/{ChannelMessageId}</code>
                 <div class="button put">put</div>
                 <div class="log">loggedIn</div>
             </div>
-            <div class="jsonBody"><span>Channel edition</span><span>{ <br> "name":"string"<br>}</span></div>
+            <div class="jsonBody"><span>Channel edition</span><span>{ <br> "content":"string"<br>}</span></div>
         </div>
-
-        <div class="blocOfCode">
-            <div class="code">
-                <p class="codeTitle">Join a channel</p>
-                <code>/channel/join/{ChannelId}</code>
-                <div class="button post">post</div>
-                <div class="log">loggedIn</div>
-            </div>
-        </div>
-
-        <div class="blocOfCode">
-            <div class="code">
-                <p class="codeTitle">Leave a channel</p>
-                <code>/channel/leave/{ChannelId}</code>
-                <div class="button post">post</div>
-                <div class="log">loggedIn</div>
-            </div>
-        </div>
-
-        <div class="blocOfCode">
-            <div class="code">
-                <p class="codeTitle">Promote a user as channel's owner</p>
-                <code>/channel/promote/owner/{UserId}/{ChannelId}</code>
-                <div class="button post">post</div>
-                <div class="log">loggedIn</div>
-            </div>
-        </div>
-
-        <div class="blocOfCode">
-            <div class="code">
-                <p class="codeTitle">Promote a user as a channel admin</p>
-                <code>/channel/promote/admin/{UserId}/{ChannelId}</code>
-                <div class="button post">post</div>
-                <div class="log">loggedIn</div>
-            </div>
-        </div>
-
-        <div class="blocOfCode">
-            <div class="code">
-                <p class="codeTitle">Demote an admin user from channel</p>
-                <code>/channel/demote/admin/{UserId}/{ChannelId}</code>
-                <div class="button post">post</div>
-                <div class="log">loggedIn</div>
-            </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
