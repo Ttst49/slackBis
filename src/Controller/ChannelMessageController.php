@@ -67,7 +67,7 @@ class ChannelMessageController extends AbstractController
             return $this->json("Le message a bien été supprimé du channel",200);
         }
 
-        return $this->json("Vous ne semlbez pas être l'auteur de ce message",200);
+        return $this->json("Vous ne semblez pas être l'auteur de ce message",200);
     }
 
 
