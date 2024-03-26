@@ -306,11 +306,11 @@
 
 
 
-        <h3 class="uppercase">private event</h3>
+        <h3 class="uppercase">Group conversation</h3>
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Show all the private events since you're participating</p>
-                <code>/private/event/index</code>
+                <p class="codeTitle">Show all the group conversation you in</p>
+                <code>/group/conversation/showAll</code>
                 <div class="button get">get</div>
                 <div class="log">loggedIn</div>
             </div>
@@ -318,8 +318,8 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Show a unique private event since you're participating</p>
-                <code>/private/event/showEvent/{Event ID}</code>
+                <p class="codeTitle">Show one group conversation</p>
+                <code>/group/conversation/show/{GroupConversation ID}</code>
                 <div class="button get">get</div>
                 <div class="log">loggedIn</div>
             </div>
@@ -327,16 +327,14 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Create a new private event</p>
-                <code>/private/event/create</code>
+                <p class="codeTitle">Create a new group conversation</p>
+                <code>/group/conversation/create</code>
                 <div class="button post">post</div>
                 <div class="log">loggedIn</div>
             </div>
-            <div class="jsonBody"><span>Private event creation</span><span>{ <br> "place":"string",<br>
-    "description":"event description",<br>
-    "startOn": "date | format (d-m-Y)",<br>
-    "endOn":"date | format (d-m-Y)",<br>
-    "isPlacePrivate":true/false <br> }</span></div>
+            <div class="jsonBody"><span>Private event creation</span><span>{ <br> "name":"string",<br>
+    "members":[friendID, friendID],
+                <br>}</span></div>
         </div>
 
         <div class="blocOfCode">
