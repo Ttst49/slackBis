@@ -366,26 +366,35 @@
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Cancel or schedule again an existing event</p>
-                <code>/private/event/changeStatus/{EventID}</code>
-                <div class="button put">put</div>
+                <p class="codeTitle">Leave a group conversation</p>
+                <code>/group/conversation/leave/{GroupConversation ID}</code>
+                <div class="button get">get</div>
                 <div class="log">loggedIn</div>
             </div>
         </div>
 
         <div class="blocOfCode">
             <div class="code">
-                <p class="codeTitle">Edit an existing private event</p>
-                <code>/private/event/edit/{eventID}</code>
-                <div class="button put">put</div>
+                <p class="codeTitle">Add a user to group conversation</p>
+                <code>/group/conversation/add/{GroupConversation ID}</code>
+                <div class="button post">post</div>
                 <div class="log">loggedIn</div>
             </div>
-            <div class="jsonBody"><span>Private event edition</span><span>{ <br> "place":"string",<br>
-        "description":"event description",<br>
-        "startOn": "date | format (d-m-Y)",<br>
-        "endOn":"date | format (d-m-Y)",<br>
-        "isPlacePrivate":true/false <br> }</span></div>
+            <div class="jsonBody"><span>Add member to group conversation</span><span>{ <br> "members":[friendID, friendID]
+                <br>}</span></div>
         </div>
+
+
+        <div class="blocOfCode">
+            <div class="code">
+                <p class="codeTitle">Kick someone from group conversation</p>
+                <code>/group/conversation/kick/{GroupConversation ID}/{UserID}</code>
+                <div class="button get">get</div>
+                <div class="log">loggedIn</div>
+            </div>
+        </div>
+
+
     </div>
 
     <h3 class="uppercase">contributions | linked to private event on private place only</h3>
