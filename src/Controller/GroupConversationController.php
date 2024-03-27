@@ -211,7 +211,7 @@ class GroupConversationController extends AbstractController
 
 
 
-    #[Route('/kick/{id}/{userId}')]
+    #[Route('/kick/{id}/{userId}',methods: "GET")]
     public function kickMember(GroupConversation $groupConversation, $userId, ProfileRepository $repository, EntityManagerInterface $manager):Response{
 
         $user = $repository->findOneBy(["id"=>$userId]);
@@ -226,7 +226,6 @@ class GroupConversationController extends AbstractController
                 switch ($user){
                     case ($this->getUser()->getProfile() == $groupConversation->getOwner() and $user == $groupMember
                         or $this->getUser()->getProfile() == $groupConversation->getOwner() and $user == $adminMember):
-                        dd($this->getUser(), $user);
                         $groupConversation->removeGroupMember($user);
                         $groupConversation->removeAdminMember($user->getRelatedTo());
                         $manager->persist($groupConversation);
