@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\PrivateConversation;
 use App\Entity\Profile;
+use App\Repository\PrivateConversationRepository;
 use App\Service\FriendsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,5 +43,17 @@ class PrivateConversationController extends AbstractController
         }
 
         return $this->json("Vous ne pouvez pas accéder à cette ressource",403);
+    }
+
+
+    #[Route('/showConversations',methods:"GET")]
+    public function showAllConversations(PrivateConversationRepository $repository):Response{
+
+        $actualProfile = $this->getUser()->getProfile();
+        $conversationsA = $repository->findBy(["relatedToProfileA"=>$actualProfile]);
+        $conversationsB = $repository->findBy(["relatedToProfileB"=>$actualProfile]);
+        $allConversations = $conversationsA + $conversationsB;
+
+        return $this->json($allConversations,200,[],["groups"=>"forPrivateConversation"]);
     }
 }
