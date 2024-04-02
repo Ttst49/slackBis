@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: PrivateConversationRepository::class)]
 class PrivateConversation
 {
+    #[Groups("forPrivateConversation")]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -20,10 +21,12 @@ class PrivateConversation
     #[ORM\OneToMany(mappedBy: 'associatedToConversation', targetEntity: PrivateMessage::class, orphanRemoval: true)]
     private Collection $privateMessages;
 
+    #[Groups("forPrivateConversation")]
     #[ORM\ManyToOne(inversedBy: 'privateConversationsA')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $relatedToProfileA = null;
 
+    #[Groups("forPrivateConversation")]
     #[ORM\ManyToOne(inversedBy: 'privateConversationsB')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Profile $relatedToProfileB = null;
