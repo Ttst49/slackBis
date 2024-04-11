@@ -56,4 +56,10 @@ class PrivateConversationController extends AbstractController
 
         return $this->json($allConversations,200,[],["groups"=>"forPrivateConversation"]);
     }
+
+    #[Route('/show/{id}',methods: "GET")]
+    public function showGroupConversation(PrivateConversation $privateConversation):Response{
+
+        return $this->json($privateConversation,200,[],["groups"=>"forPrivateConversation"]);
+    }
 }
