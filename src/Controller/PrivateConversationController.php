@@ -15,13 +15,40 @@ use Symfony\Component\Routing\Annotation\Route;
 class PrivateConversationController extends AbstractController
 {
     #[Route('/create/{id}', methods: "POST")]
-    public function index(Profile $profile, FriendsService $friendsService,EntityManagerInterface $manager): Response
+    public function index(Profile $profile,
+                          FriendsService $friendsService,
+                          EntityManagerInterface $manager,
+                          PrivateConversationRepository $repository
+    ): Response
     {
         $friends = $friendsService->getFriends();
 
+        $allFromA = $repository->findBy(
+            [
+                "relatedToProfileA"=>$this->getUser()->getProfile(),
+            ]);
+        $allFromB = $repository->findBy(
+            [
+                "relatedToProfileB"=>$this->getUser()->getProfile()
+            ]
+        );
+        $conversationsOfCurrentUser = $allFromA+$allFromB;
         if ($friends != []){
             foreach ($friends as $item){
                 if ($profile->getRelatedTo()->getUsername() == $item->getUsername()){
+                    foreach ($conversationsOfCurrentUser as $conversation){
+                        if ($conversation
+                            ->getRelatedToProfileA()
+                            ->getRelatedTo()
+                            ->getUsername()==$profile->getRelatedTo()->getUsername()
+                            ||
+                            $conversation
+                            ->getRelatedToProfileB()
+                            ->getRelatedTo()
+                            ->getUsername()==$profile->getRelatedTo()->getUsername()){
+                            return $this->json("Vous avez déjà une conversation privé avec cette personne");
+                        }
+                    }
                     $privateConversation = new PrivateConversation();
                     $privateConversation->setRelatedToProfileA($this->getUser()->getProfile());
                     $privateConversation->setRelatedToProfileB($profile);
